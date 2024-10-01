@@ -9,34 +9,35 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import Link from 'next/link'
+import React from 'react'
 
-// Zod schema for form validation
 const schema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
 })
 
-export default function Component() {
+export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
 
-  // Initialize useForm with zod schema validation
   const {
     register,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     handleSubmit,
     formState: { errors }
   } = useForm({
     resolver: zodResolver(schema)
   })
 
-//   const onSubmit = (data: any) => {
-//     console.log("Form Data:", data)
-//   }
+  const onSubmit = (data: unknown) => {
+    console.log("Form Data:", data)
+  }
 
   return (
+    <>
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-semibold text-center text-gray-700">Sign In to Job Seek</h1>
-        <form className="space-y-4" onSubmit={}>
+        <form className="space-y-4" onSubmit={onSubmit}>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -47,7 +48,7 @@ export default function Component() {
               className={errors.email ? 'border-red-500' : ''}
             />
             {errors.email && (
-              <p className="text-sm text-red-500">{errors.email.message}</p>
+              <p className="text-sm text-red-500">{errors.email.message?.toString()}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -72,7 +73,7 @@ export default function Component() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
+              <p className="text-sm text-red-500">{errors.password?.message?.toString()}</p>
             )}
           </div>
           <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
@@ -90,5 +91,6 @@ export default function Component() {
         </p>
       </div>
     </div>
+    </>
   )
 }
