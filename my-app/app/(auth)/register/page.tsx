@@ -43,7 +43,7 @@ const Register = () => {
           <div className="flex items-center gap-8 md:flex-row flex-col">
             <div className="bg-white flex-1 py-16 px-5 rounded-md shadow-md border border-gray-200">
               <Label className="block">
-                <h1 className="font-medium text-2xl font-bold">I am looking for work</h1>
+                <h1 className="text-2xl font-bold">I am looking for work</h1>
                 <p className="text-sm mt-5 mb-10">
                   Create a <strong>jobseeker</strong> account.
                 </p>
