@@ -33,7 +33,7 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-[#FAFAFA] px-10 py-14">
+    <div className="bg-[#FAFAFA] px-10 py-24">
       <div className="bg-white w-full max-w-[400px] border border-gray-300 m-auto px-6 py-12">
         <h1 className="text-xl text-center mb-7 text-gray-600">
           Sign In to Job Seek

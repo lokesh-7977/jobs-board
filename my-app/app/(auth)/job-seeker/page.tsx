@@ -10,6 +10,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import  Navbar  from '@/components/custom/Navbar';
+import  Footer  from '@/components/custom/Footer';
+import React from 'react';
 
 
 // Define validation schema using Zod
@@ -43,8 +46,10 @@ const Jobseeker = () => {
 
 
   return (
-    <div className='bg-[#FAFAFA] px-10 py-14'>
-      <div className='bg-white w-full max-w-[600px] border border-gray-300 m-auto px-8 py-12'>
+    <>
+    <Navbar/>
+    <div className='bg-[#FAFAFA] px-10 py-16'>
+      <div className='bg-white w-full max-w-[600px]  border border-gray-300 m-auto px-8 py-12'>
         <h1 className='text-xl text-center mb-7 text-gray-600'>Sign Up</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='mb-7'>
@@ -55,7 +60,7 @@ const Jobseeker = () => {
                 type='text' 
                 {...register('name')} 
                 placeholder='Name' 
-                className={`outline-0 w-full text-sm ${errors.name ? 'border-red-500' : ''}`} 
+                className={`outline-0 w-full text-sm h-10 ${errors.name ? 'border-red-500' : ''}`} 
               />
             </Label>
             {errors.name && <p className='text-red-500 text-sm'>{errors.name.message}</p>}
@@ -69,7 +74,7 @@ const Jobseeker = () => {
                 type='email' 
                 {...register('email')} 
                 placeholder='Email address' 
-                className={`outline-0 w-full text-sm ${errors.email ? 'border-red-500' : ''}`} 
+                className={`outline-0 w-full text-sm h-10 ${errors.email ? 'border-red-500' : ''}`} 
               />
             </Label>
             {errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
@@ -78,18 +83,20 @@ const Jobseeker = () => {
           <div className='mb-7'>
             <Label htmlFor='password' className='flex items-center gap-3'>
               <BiLock className='text-lg text-gray-500' />
+              <div className='flex flex-row border-gray-200 rounded-lg border-2 w-full gap-6 justify-center items-center'>
               <Input 
                 id='password'
                 type={showPassword ? 'text' : 'password'} 
                 {...register('password')} 
                 placeholder='Password' 
-                className={`outline-0 w-full text-sm pr-3 ${errors.password ? 'border-red-500' : ''}`} 
+                className={`outline-0 border-none w-full text-sm h-10 pr-3 ${errors.password ? 'border-red-500' : ''}`} 
               />
               {showPassword ? (
-                <AiFillEyeInvisible onClick={() => setShowPassword(false)} className='cursor-pointer text-gray-500' />
+                <AiFillEyeInvisible onClick={() => setShowPassword(false)} className='cursor-pointer text-gray-500 mr-3 text-lg' />
               ) : (
-                <AiFillEye onClick={() => setShowPassword(true)} className='cursor-pointer text-gray-500' />
+                <AiFillEye onClick={() => setShowPassword(true)} className='cursor-pointer text-gray-500 mr-3 text-lg' />
               )}
+              </div>
             </Label>
             {errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
           </div>
@@ -97,18 +104,20 @@ const Jobseeker = () => {
           <div className='mb-7'>
             <Label htmlFor='passwordConfirmation' className='flex items-center gap-3'>
               <BiLock className='text-lg text-gray-500' />
+              <div className='flex flex-row border-gray-200 rounded-lg border-2 w-full gap-6 justify-center items-center'>
               <Input 
                 id='passwordConfirmation'
                 type={showPasswordConfirmation ? 'text' : 'password'} 
                 {...register('passwordConfirmation')} 
                 placeholder='Password confirmation' 
-                className={`outline-0 w-full text-sm pr-3 ${errors.passwordConfirmation ? 'border-red-500' : ''}`} 
+                className={`outline-0 w-full border-none bg-none text-sm h-10 pr-3 ${errors.passwordConfirmation ? 'border-red-500 ' : ''}`} 
               />
               {showPasswordConfirmation ? (
-                <AiFillEyeInvisible onClick={() => setShowPasswordConfirmation(false)} className='cursor-pointer text-gray-500' />
+                <AiFillEyeInvisible onClick={() => setShowPasswordConfirmation(false)} className='cursor-pointer text-gray-500 mr-3 text-lg' />
               ) : (
-                <AiFillEye onClick={() => setShowPasswordConfirmation(true)} className='cursor-pointer text-gray-500' />
+                <AiFillEye onClick={() => setShowPasswordConfirmation(true)} className='cursor-pointer text-gray-500 mr-3 text-lg' />
               )}
+              </div>
             </Label>
             {errors.passwordConfirmation && <p className='text-red-500 text-sm'>{errors.passwordConfirmation.message}</p>}
           </div>
@@ -126,6 +135,8 @@ const Jobseeker = () => {
         </p>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
 

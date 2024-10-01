@@ -62,8 +62,8 @@ const Organization = () => {
       <div className="bg-white w-full max-w-[1000px] border border-gray-300 m-auto px-8 py-12">
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Organization Name and Email */}
-          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
-            <div className="flex-1">
+          <div className="flex md:flex-row flex-row md:items-center gap-7 md:mb-10 mb-7">
+            <div className="grid w-[28.3rem] gap-3">
               <Label htmlFor="name" className="text-sm">Organization Name</Label>
               <Input
                 id="name"
@@ -71,7 +71,7 @@ const Organization = () => {
               />
               {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
             </div>
-            <div className="flex-1">
+            <div className="grid w-[28.3rem] gap-3">
               <Label htmlFor="email" className="text-sm">Organization Email</Label>
               <Input
                 type="email"
@@ -82,7 +82,6 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Password and Password Confirmation */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="password" className="text-sm">Password</Label>
@@ -91,7 +90,7 @@ const Organization = () => {
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   {...register('password', { required: 'Password is required' })}
-                  className="w-full outline-0"
+                  className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-transparent focus:ring-0 focus:outline-none"
                 />
                 {showPassword ? (
                   <AiFillEyeInvisible onClick={() => setShowPassword(false)} className="text-gray-400 cursor-pointer" />
@@ -108,7 +107,7 @@ const Organization = () => {
                   type={showPasswordConfirmation ? 'text' : 'password'}
                   id="passwordConfirmation"
                   {...register('passwordConfirmation', { required: 'Password Confirmation is required' })}
-                  className="w-full outline-0"
+                  className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-transparent focus:ring-0 focus:outline-none"
                 />
                 {showPasswordConfirmation ? (
                   <AiFillEyeInvisible onClick={() => setShowPasswordConfirmation(false)} className="cursor-pointer text-gray-500" />
@@ -242,7 +241,7 @@ const Organization = () => {
               type="file"
               accept="image/*"
               onChange={(e) => setAvatar(e.target.files ? Array.from(e.target.files) : [])}
-              className="mt-3"
+              className="mt-3 w-[15rem]"
             />
           </div>
 
