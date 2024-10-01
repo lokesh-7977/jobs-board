@@ -62,11 +62,11 @@ const Login = () => {
             <Label htmlFor="password" className="text-sm">
               Password
             </Label>
-            <div className="flex items-center border border-gray-300 mt-3 rounded-md px-2 py-3 gap-2">
+            <div className="flex items-center border border-gray-300 mt-3 rounded-md px-2 py-3  gap-2">
               <Input
                 type={showPassword ? "text" : "password"}
                 id="password"
-                className="w-full"
+                className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-transparent focus:ring-0 focus:outline-none"
                 {...register("password")}
               />
               {showPassword ? (

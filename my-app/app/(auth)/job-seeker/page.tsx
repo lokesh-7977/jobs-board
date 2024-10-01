@@ -41,13 +41,24 @@ const Jobseeker = () => {
     console.log("Form data:", data);
   };
 
+  const [submit,setSubmit] = useState();
+
   return (
+<<<<<<< Updated upstream
     <div className='bg-[#FAFAFA] px-10 py-14'>
       <div className='bg-white w-full max-w-[600px] border border-gray-300 m-auto px-8 py-12'>
         <h1 className='text-xl text-center mb-7 text-gray-600'>Sign Up</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='mb-7'>
             <Label htmlFor='name' className='flex items-center gap-3'>
+=======
+    // <Navbar />
+      <div className='bg-[#FAFAFA] px-10 py-14'>
+        <div className='bg-white grid place-content-center w-full max-w-[600px] border border-gray-300 m-auto px-8 py-12'>
+          <h1 className='text-xl text-center mb-7 text-gray-600'>Sign Up</h1>
+          <form onSubmit={submit}>
+            <div className='flex items-center gap-3 border border-gray-300 rounded-md h-12 px-3 mb-7'>
+>>>>>>> Stashed changes
               <AiOutlineUser className='text-lg text-gray-500' />
               <Input 
                 id='name'
