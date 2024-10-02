@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import express,{ Request, Response } from "express";
+import bcrypt from "bcrypt"; 
 import jwt from "jsonwebtoken";
 import User from "../models/auth.model";  
 import { config } from "../config/index";
@@ -60,7 +60,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     }
 
     const jwtSecret = config.jwt as string;
-    const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: 3600 });
+    const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: config.jwt_expiration as string });
 
     return res.json({
       token,

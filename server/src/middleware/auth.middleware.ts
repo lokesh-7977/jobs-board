@@ -22,7 +22,7 @@ export const authMiddleware = (
 
     if (!token) {
         res.status(401).json({ message: "Access denied. No token provided." });
-        return;  // Ensure the function stops here
+        return;  
     }
 
     try {
@@ -31,6 +31,6 @@ export const authMiddleware = (
         next();
     } catch (error) {
         res.status(400).json({ message: "Invalid token." });
-        return;  // Ensure function stops on error
+        return;  
     }
 };
