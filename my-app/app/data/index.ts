@@ -14,7 +14,9 @@ export const data = [
           "Knowledge of advertising platforms"
         ]
       },
+      "level":"Entry Level",
       "salary": "Rp 9.000.000 / month",
+      "type": "fullTime",
       "companyOverview": {
         "focus": "Financial Technology",
         "goals": "Create a seamless platform for sending and receiving money with minimum fees. Provide API access for developers. Create a worldwide e-payment platform."
@@ -41,7 +43,9 @@ export const data = [
           "Strong communication skills"
         ]
       },
+      "level":"Manager",
       "salary": "Rp 7.500.000 / month",
+      "type": "partTime",
       "companyOverview": {
         "focus": "Digital Payment Solutions",
         "goals": "Provide digital payment integration solutions for businesses."
@@ -68,7 +72,9 @@ export const data = [
           "Social Media Management"
         ]
       },
+      "level":"Entry Level",
       "salary": "Rp 8.000.000 / month",
+      "type": "freelance",
       "companyOverview": {
         "focus": "Cross-border payment systems",
         "goals": "Enable seamless international payments with reduced fees."
@@ -95,7 +101,9 @@ export const data = [
           "Experience with API integration"
         ]
       },
+      "level":"Associate",
       "salary": "Rp 10.500.000 / month",
+      "type": "contractual",
       "companyOverview": {
         "focus": "Instant money transfers",
         "goals": "Provide quick, secure, and low-cost money transfers."
@@ -123,6 +131,7 @@ export const data = [
         ]
       },
       "salary": "Rp 9.500.000 / month",
+      "type": "fullTime",
       "companyOverview": {
         "focus": "B2B payment solutions",
         "goals": "Facilitate seamless payment processing between businesses."
@@ -150,6 +159,7 @@ export const data = [
         ]
       },
       "salary": "Rp 11.000.000 / month",
+      "type": "partTime",
       "companyOverview": {
         "focus": "Mobile Wallet Solutions",
         "goals": "Create a secure and user-friendly mobile wallet for easy transactions."
