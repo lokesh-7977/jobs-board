@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormSubmit } from "../../app/types/interface";
 
-const Home = () => {
+const Hero = () => {
   const [search, setSearch] = useState("");
   const router = useRouter();
 
@@ -53,4 +53,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Hero;
