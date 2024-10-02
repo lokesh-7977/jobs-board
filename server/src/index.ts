@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import { config } from "./config/index"
 import { connectDB } from "./config/db";
 
-import auth from "./routes"
+import auth from "./routes/index"
 
 const app = express();
 const PORT = config.port;
