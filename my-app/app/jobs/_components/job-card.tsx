@@ -1,114 +1,69 @@
-"use client";
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-
-interface IProps {
-    id: string | null | undefined;
-    logo: string;
-    organization: string;
-    province: string;
-    city: string;
-    title: string;
-    type: string;
-    description: string;
-    salary: number;
-    salaryType: string;
+import React from 'react';
+import {useRouter} from 'next/navigation';
+interface JobCardProps {
+  id: number;
+  logo: string;
+  organization: string;
+  province: string;
+  city: string;
+  title: string;
+  type: string;
+  description: string;
+  salary: number;
+  salaryType: 'month' | 'year';
+  level: string;
 }
 
-const JobCard = ({
+const JobCard: React.FC<JobCardProps> = ({
     id,
-    logo,
-    organization,
-    province,
-    city,
-    title,
-    type,
-    description,
-    salary,
-    salaryType
-}: IProps) => {
-    const [provinceDetail, setProvinceDetail] = useState('');
-    const [cityDetail, setCityDetail] = useState('');
-    const [loading, setLoading] = useState(true);
-
+  logo,
+  organization,
+  province,
+  city,
+  title,
+  type,
+  salary,
+  salaryType,
+  level,
+}) => {
     const router = useRouter();
 
-    useEffect(() => {
-        const getProvinceData = async () => {
-            try {
-                const res = await fetch(`https://dev.farizdotid.com/api/daerahindonesia/provinsi/${province}`);
-                const data = await res.json();
-                setProvinceDetail(data.nama || 'Unknown Province');
-            } catch (error) {
-                console.error('Error fetching province data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+  const handleCardClick = () => {
+    router.push(`/jobs/${id}`); // Navigate to the dynamic route
+  };
 
-        getProvinceData();
-    }, [province]);
-
-    useEffect(() => {
-        const getCityData = async () => {
-            try {
-                const res = await fetch(`https://dev.farizdotid.com/api/daerahindonesia/kota/${city}`);
-                const data = await res.json();
-                setCityDetail(data.nama || 'Unknown City');
-            } catch (error) {
-                console.error('Error fetching city data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        getCityData();
-    }, [city]);
-
-    const toINRCurrency = (salary: number): string => {
-        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(salary);
-    };
-
-    if (loading) return <p>Loading...</p>; // Simple loading state
-
-    return (
-        <div
-            onClick={() => router.push(`/job/${id}`)}
-            className="hover:border-2 border hover:border-[#504ED7] border-gray-200 shadow-md p-5 hover:scale-105 rounded-md transition-[transform] cursor-pointer"
-            role="button"
-            aria-label={`View details for ${title} at ${organization}`} // Accessibility
-        >
-            <div className="flex items-center gap-2">
-                <Image src={logo} alt={organization} className="rounded-full object-cover" width={48} height={48} />
-            </div>
-            <div>
-                <h1 className="font-medium">{organization}</h1>
-                <p className="mt-2 text-xs text-gray-500">{provinceDetail}, {cityDetail}</p>
-            </div>
-
-            <div className="mb-10 mt-6">
-                <h1 className="font-semibold text-xl">{title}</h1>
-                <p className="font-medium text-gray-500 text-sm mt-1">
-                    {type === 'fullTime'
-                        ? 'Full Time'
-                        : type === 'partTime'
-                        ? 'Part Time'
-                        : type === 'freelance'
-                        ? 'Freelance'
-                        : 'Contractual'}
-                </p>
-                <div className="mt-3 text-gray-400 text-sm">{description.slice(0, 30)}...</div>
-            </div>
-
-            <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                    <p className="font-semibold text-xl">{toINRCurrency(salary)}</p>
-                    <sub className="text-xs text-gray-500 font-medium">/{salaryType}</sub>
-                </div>
-            </div>
+  return (
+    <div onClick={handleCardClick} className="bg-white shadow-md rounded-lg p-5 transition-transform hover:scale-105">
+      <div className="flex items-center gap-4">
+        {/* Job Logo */}
+        <img src={logo} alt={organization} className="w-12 h-12 rounded-full" />
+        <div className="flex flex-col">
+          {/* Job Title */}
+          <h2 className="font-bold text-lg">{title}</h2>
+          {/* Organization */}
+          <p className="text-gray-600">{organization}</p>
         </div>
-    );
+      </div>
+
+      {/* Tags for Job Level and Type */}
+      <div className="flex gap-2 mt-4">
+        {/* <span className="bg-green-100 text-green-600 text-xs font-semibold py-1 px-3 rounded-full">
+          {level}
+        </span> */}
+        <span className="bg-green-100 text-green-600 text-xs font-semibold py-1 px-3 rounded-full">
+          {type}
+        </span>
+      </div>
+
+      {/* Location */}
+      <p className="text-gray-500 mt-4">{`${city}, ${province}`}</p>
+
+      {/* Salary */}
+      <p className="text-blue-600 font-semibold mt-2">
+        {`Rp ${salary.toLocaleString('id-ID')} / ${salaryType === 'month' ? 'Month' : 'Year'}`}
+      </p>
+    </div>
+  );
 };
 
 export default JobCard;

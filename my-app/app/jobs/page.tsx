@@ -1,99 +1,141 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FormSubmit, IJob } from "./../types/interface";
-import Footer from "./../../components/custom/Footer";
+import Footer from "../../components/custom/Footer";
 import Navbar from "../../components/custom/Navbar";
 import JobCard from "./_components/job-card";
-import Filter from "./_components/filter";
+import Filter from "./_components/filter"; // Adjust the import path as needed
+import { data as jobData } from "../data/index";
 
-interface IProps {
-  data: IJob[];
+interface IJobCardProps {
+  id: number;
+  logo: string;
+  organization: string;
+  province: string;
+  city: string;
+  title: string;
+  type: string;
+  description: string;
+  salary: number;
+  
+  level: string
+  salaryType: 'month' | 'year';
+  
 }
 
-
-const Jobs = ({ data }: IProps) => {
-  const [search, setSearch] = useState("");
+const Jobs: React.FC = () => {
+  const [search, setSearch] = useState<string>("");
+  const [jobs, setJobs] = useState<IJobCardProps[]>([]);
   const [selectedJobLevel, setSelectedJobLevel] = useState<string[]>([]);
-  const [selectedEmploymentType, setSelectedEmploymentType] = useState<
-    string[]
-  >([]);
-  const [minSalary, setMinSalary] = useState(0);
+  const [selectedEmploymentType, setSelectedEmploymentType] = useState<string[]>([]);
+  const [minSalary, setMinSalary] = useState<number>(0);
 
-  const router = useRouter();
-  const [jobs, setJobs] = useState<IJob[]>([]);
+  useEffect(() => {
+    // Transform data to IJobCardProps format
+    const transformedJobs: IJobCardProps[] = jobData.map((job) => {
+      const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
+      let salaryNumber = 0;
+      let salaryType: 'month' | 'year' = 'month';
 
-  // Function to handle filters and redirect with query params
-  const handleFilter = (e?: FormSubmit) => {
-    e?.preventDefault();
-    const queryParams = new URLSearchParams();
+      if (salaryMatch) {
+        const salaryStr = salaryMatch[1].replace(/\./g, '').replace(/,/g, '');
+        salaryNumber = parseInt(salaryStr, 10);
+        salaryType = salaryMatch[2].toLowerCase() === 'year' ? 'year' : 'month';
+      }
 
-    if (search) queryParams.append("q", search);
-    if (selectedJobLevel.length > 0)
-      queryParams.append("jobLevel", selectedJobLevel.join(","));
-    if (selectedEmploymentType.length > 0)
-      queryParams.append("employmentType", selectedEmploymentType.join(","));
-    if (minSalary > 0) queryParams.append("salary", minSalary.toString());
+      return {
+        id: job.id,
+        logo: "/path-to-logo-placeholder.png", // Replace with actual logo path
+        organization: job.name,
+        province: job.companyLocation.province,
+        city: job.companyLocation.city,
+        title: job.position,
+        type: job.type, // Default type
+        description: job.jobOverview,
+        salary: salaryNumber,
+        salaryType: salaryType,
+        level: job.level || '',
+      };
+    });
 
-    router.push(`/jobs?${queryParams.toString()}`);
+    setJobs(transformedJobs);
+  }, []);
+
+  const handleFilter = () => {
+    // Filter logic based on selectedJobLevel, selectedEmploymentType, and minSalary
+    const filteredJobs = jobData.filter(job => {
+      const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
+      let salaryNumber = 0;
+
+      if (salaryMatch) {
+        const salaryStr = salaryMatch[1].replace(/\./g, '').replace(/,/g, '');
+        salaryNumber = parseInt(salaryStr, 10);
+      }
+
+      const matchesJobLevel = selectedJobLevel.length === 0 || selectedJobLevel.includes(job.level || ''); // Ensure job level is in job data
+      const matchesEmploymentType = selectedEmploymentType.length === 0 || selectedEmploymentType.includes(job.type); // Ensure employment type is in job data
+      const matchesSalary = salaryNumber >= minSalary;
+
+      return matchesJobLevel && matchesEmploymentType && matchesSalary;
+    });
+
+    const transformedFilteredJobs: IJobCardProps[] = filteredJobs.map((job) => {
+      const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
+      let salaryNumber = 0;
+      let salaryType: 'month' | 'year' = 'month';
+
+      if (salaryMatch) {
+        const salaryStr = salaryMatch[1].replace(/\./g, '').replace(/,/g, '');
+        salaryNumber = parseInt(salaryStr, 10);
+        salaryType = salaryMatch[2].toLowerCase() === 'year' ? 'year' : 'month';
+      }
+
+      return {
+        id: job.id,
+        logo: "/path-to-logo-placeholder.png", // Replace with actual logo path
+        organization: job.name,
+        province: job.companyLocation.province,
+        city: job.companyLocation.city,
+        title: job.position,
+        type: 'fullTime', // Default type
+        description: job.jobOverview,
+        salary: salaryNumber,
+        salaryType: salaryType,
+        level: job.level || '',
+      };
+    });
+
+    setJobs(transformedFilteredJobs);
   };
-
-  useEffect(() => {
-    setJobs(data);
-  }, [data]);
-
-  useEffect(() => {
-    const jobLevelQuery = router.query.jobLevel;
-    const employmentTypeQuery = router.query.employmentType;
-    const salary = router.query.salary;
-
-    if (jobLevelQuery) {
-      setSelectedJobLevel(
-        Array.isArray(jobLevelQuery) ? jobLevelQuery : [jobLevelQuery]
-      );
-    }
-
-    if (employmentTypeQuery) {
-      setSelectedEmploymentType(
-        Array.isArray(employmentTypeQuery)
-          ? employmentTypeQuery
-          : [employmentTypeQuery]
-      );
-    }
-
-    if (salary) {
-      setMinSalary(parseInt(salary as string, 10));
-    }
-  }, [router.query]);
 
   return (
     <>
       <Navbar />
-      <div className="md:py-10 py-7 md:px-16 px-5">
-        <div className="w-full m-auto bg-white shadow-xl border border-gray-200 md:rounded-full rounded-md md:h-16 h-auto md:py-0 py-6 px-4">
-          <form
-            onSubmit={handleFilter}
-            className="flex md:flex-row flex-col justify-between items-center h-full gap-3"
-          >
-            <div className="flex w-full items-center gap-3 md:mb-0 mb-5 md:border-none border-b border-gray-200 md:pb-0 pb-3 flex-1">
+      {/* Search Bar */}
+      <div className="py-10 px-5">
+        <div className="w-full m-auto bg-white shadow-xl border border-gray-200 rounded-full h-16 py-0 px-4">
+          <form className="flex justify-between items-center h-full gap-3">
+            <div className="flex w-full items-center gap-3">
               <AiOutlineSearch className="text-xl text-gray-500" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Job title or keyword"
-                className="outline-0 h-full px-2 w-full text-sm"
+                className="outline-none h-full px-2 w-full text-sm"
               />
             </div>
-            <button className="bg-[#504ED7] hover:bg-[#2825C2] transition-[background] text-white text-sm px-6 py-2 rounded-full outline-0">
+            <button className="bg-[#504ED7] hover:bg-[#2825C2] text-white text-sm px-6 py-2 rounded-full">
               Search
             </button>
           </form>
         </div>
       </div>
+
+      {/* Filter Component */}
       <Filter
         selectedJobLevel={selectedJobLevel}
         setSelectedJobLevel={setSelectedJobLevel}
@@ -103,15 +145,29 @@ const Jobs = ({ data }: IProps) => {
         setMinSalary={setMinSalary}
         handleFilter={handleFilter}
       />
-      <div className="bg-gray-100 pt-10 pb-7 md:px-16 px-5">
+
+      <div className="bg-gray-100 py-10 px-5">
         {jobs.length === 0 ? (
           <div className="bg-red-500 text-center text-white rounded-md py-3">
-            There&apos;s no job available.
+            There's no job available.
           </div>
         ) : (
           <div className="grid gap-8 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
             {jobs.map((job) => (
-              <JobCard key={job.id} item={job} />
+              <JobCard
+                key={job.id}
+                id={job.id}
+                logo={job.logo}
+                organization={job.organization}
+                province={job.province}
+                city={job.city}
+                title={job.title}
+                type={job.type}
+                description={job.description}
+                salary={job.salary}
+                salaryType={job.salaryType}
+                level={job.level}
+              />
             ))}
           </div>
         )}
