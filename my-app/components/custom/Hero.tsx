@@ -34,7 +34,7 @@ const Hero = () => {
           onSubmit={handleSubmit}
           className="flex md:flex-row flex-col justify-between items-center h-full gap-3"
         >
-          <div className="flex w-full items-center gap-3 md:mb-0 mb-5 md:border-none border-b border-gray-200 md:pb-0 pb-3 flex-1">
+          <div className="flex w-full items-center gap-3 md:mb-0 mb-5 md:border-none border-b border-gray-200 md:pb-0 pb-3 flex-1 border-none">
             <AiOutlineSearch className="text-xl text-gray-500" />
             <Input
               type="text"
