@@ -2,15 +2,22 @@ import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import { config } from "./config/index"
 import { connectDB } from "./config/db";
+import cors from 'cors';
 
 import auth from "./routes/index"
 
 const app = express();
 const PORT = config.port;
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+    origin: 'http://localhost:3000', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.get('/', (_req: Request, res: Response) => {
     res.send('Hello, World!');
