@@ -88,7 +88,7 @@ const Login = () => {
                 {errors.password?.message}
               </p>
             )}
-            <Link href="/forgot_password">
+            <Link href="/forgot-password">
               <span className="text-blue-500 text-xs mt-2 float-right cursor-pointer">
                 Forgot password?
               </span>

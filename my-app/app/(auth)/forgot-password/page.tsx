@@ -37,11 +37,11 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div className="bg-[#FAFAFA] px-10 py-14">
-      <div className="bg-white w-full max-w-[400px] border border-gray-300 m-auto px-6 py-12">
+    <div className="bg-[#FAFAFA] px-10 py-44">
+      <div className="bg-white w-full max-w-[400px] h-[20rem] border border-gray-300 m-auto px-6 py-12">
         <h1 className="text-xl text-center mb-7 text-gray-600">Forgot Password</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
+          <div>
             <Label htmlFor="email" className="text-sm">Email</Label>
             <Input 
               type="email" 
@@ -57,7 +57,7 @@ const ForgetPassword = () => {
 
           <Button
             type="submit"
-            className={`w-full mt-6 ${loading ? 'bg-gray-200 cursor-auto' : 'bg-[#504ED7] hover:bg-[#2825C2] cursor-pointer'}`}
+            className={`w-full rounded-none mt-6 ${loading ? 'bg-gray-200 cursor-auto' : 'bg-[#504ED7] hover:bg-[#2825C2] cursor-pointer'}`}
             disabled={loading}
           >
             {loading ? 'Loading...' : 'Send Reset Link'}
