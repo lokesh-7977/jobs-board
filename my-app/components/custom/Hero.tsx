@@ -41,7 +41,7 @@ const Hero = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Job title or keyword"
-              className="outline-0 h-full px-2 w-full text-sm"
+              className="outline-0 h-full px-2 w-full text-sm border-none"
             />
           </div>
           <Button type="submit" className="bg-[#504ED7] hover:bg-[#2825C2] transition-[background] text-white text-sm px-6 py-2 rounded-full outline-0">
