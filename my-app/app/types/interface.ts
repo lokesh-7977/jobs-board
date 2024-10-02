@@ -84,6 +84,7 @@ export interface IDistrictData extends IProvinceData {
 }
 
 export interface IJob {
+  id: Key | null | undefined
   _id?: string
   organization?: IOrganization
   position: string
