@@ -4,8 +4,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineClose } from "react-icons/ai";
 import Link from "next/link";
-import Image from "next/image";
-import Logo from "@/app/favicon.ico";
+// import Image from "next/image";
+// import Logo from "@/app/logo.jpg";
 import { useAuth } from "@/app/context/AuthContext"; // Assuming your AuthContext is correctly set up
 import React from "react";
 
@@ -30,16 +30,14 @@ const Navbar = () => {
   return (
     <div className="flex items-center justify-between gap-10 lg:px-16 pl-4 pr-7 z-[999] py-3 bg-white sticky top-0 shadow-sm">
       <div onClick={() => router.push("/")} className="flex items-center cursor-pointer">
-        <Image src={Logo} width={60} height={60} alt="Job Seek" />
-        <h1 className="text-xl">Job Seek</h1>
+        {/* <Image src={Logo} width={100} height={60} alt="Job Seek" /> */}
+        <h1 className="text-xl">Carrer Connects</h1>
       </div>
 
-      {/* Hamburger Menu for mobile view */}
       <div onClick={() => setOpenSidebar(true)} className="lg:hidden block">
         <GiHamburgerMenu className="text-xl cursor-pointer" />
       </div>
 
-      {/* Sidebar */}
       <div
         ref={sidebarRef}
         className={`lg:static fixed top-0 ${

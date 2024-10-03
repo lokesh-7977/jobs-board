@@ -8,7 +8,7 @@ const Footer = () => {
       <div className='flex-1'>
         <div className='flex items-center mb-2'>
           <Image src={Logo} width={60} height={60} alt='Job Seek' />
-          <h1 className="ml-2">Name</h1>
+          <h1 className="ml-2">Carrer Connects</h1>
         </div>
         <p className='mb-3'>We transform the way candidates find jobs and companies hire talent.</p>
         <p>&copy; {new Date().getFullYear()}</p>

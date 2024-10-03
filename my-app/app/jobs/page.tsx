@@ -2,12 +2,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { AiOutlineSearch } from "react-icons/ai";
 import Footer from "../../components/custom/Footer";
 import Navbar from "../../components/custom/Navbar";
 import JobCard from "./_components/job-card";
-import Filter from "./_components/filter"; 
+import Filter from "./_components/filter"; // Adjust the import path as needed
 import { data as jobData } from "../data/index";
 
 interface IJobCardProps {
@@ -34,6 +33,7 @@ const Jobs: React.FC = () => {
   const [minSalary, setMinSalary] = useState<number>(0);
 
   useEffect(() => {
+    // Transform data to IJobCardProps format
     const transformedJobs: IJobCardProps[] = jobData.map((job) => {
       const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
       let salaryNumber = 0;
@@ -47,7 +47,7 @@ const Jobs: React.FC = () => {
 
       return {
         id: job.id,
-        logo: "/path-to-logo-placeholder.png", 
+        logo: "/path-to-logo-placeholder.png", // Replace with actual logo path
         organization: job.name,
         province: job.companyLocation.province,
         city: job.companyLocation.city,
