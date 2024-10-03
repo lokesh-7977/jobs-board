@@ -51,7 +51,7 @@ const Jobseeker = () => {
     const { passwordConfirmation, ...signupData } = data;
     const signupPayload = {
       ...signupData,
-      role: "jobseeker"
+      role: "jobSeeker"
     };
     
     try {

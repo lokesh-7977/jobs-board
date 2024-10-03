@@ -4,9 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineClose } from "react-icons/ai";
 import Link from "next/link";
-// import Image from "next/image";
-// import Logo from "@/app/logo.jpg";
-import { useAuth } from "@/app/context/AuthContext"; // Assuming your AuthContext is correctly set up
+import { useSession, signOut } from "next-auth/react";
 import React from "react";
 
 const Navbar = () => {
@@ -14,9 +12,9 @@ const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const sidebarRef = useRef() as React.MutableRefObject<HTMLDivElement>;
-  const { user, logout } = useAuth(); // Access user and logout from context
-  
-  // Close sidebar when clicking outside
+
+  const { data: session } = useSession();
+
   useEffect(() => {
     const checkIfClickedOutside = (e: MouseEvent) => {
       if (openSidebar && sidebarRef.current && !sidebarRef.current.contains(e.target as Node)) {
@@ -28,58 +26,55 @@ const Navbar = () => {
   }, [openSidebar]);
 
   return (
-    <div className="flex items-center justify-between gap-10 lg:px-16 pl-4 pr-7 z-[999] py-3 bg-white sticky top-0 shadow-sm">
+    <div className="flex items-center justify-between gap-10 lg:px-16 pl-4 pr-7 z-[999] py-3 bg-white sticky top-0 shadow-lg">
       <div onClick={() => router.push("/")} className="flex items-center cursor-pointer">
-        {/* <Image src={Logo} width={100} height={60} alt="Job Seek" /> */}
-        <h1 className="text-xl">Carrer Connects</h1>
+        <h1 className="text-2xl font-bold text-[#504ED7]">Career Connect</h1>
       </div>
 
       <div onClick={() => setOpenSidebar(true)} className="lg:hidden block">
-        <GiHamburgerMenu className="text-xl cursor-pointer" />
+        <GiHamburgerMenu className="text-2xl cursor-pointer" />
       </div>
 
       <div
         ref={sidebarRef}
         className={`lg:static fixed top-0 ${
           openSidebar ? "right-0" : "-right-[3000px]"
-        } transition-all bottom-0 lg:shadow-none shadow-xl lg:w-auto w-[200px] lg:p-0 p-7 bg-white lg:flex lg:flex-1`}
+        } transition-all bottom-0 lg:shadow-none shadow-xl lg:w-auto w-[250px] lg:p-0 p-7 bg-white lg:flex lg:flex-1`}
       >
         <AiOutlineClose
           onClick={() => setOpenSidebar(false)}
-          className="float-right text-xl mb-5 lg:hidden cursor-pointer"
+          className="float-right text-2xl mb-5 lg:hidden cursor-pointer"
         />
         <div className="clear-both" />
 
-        {/* Links in the Navbar */}
         <div className="flex-1 lg:flex-row flex-col flex lg:items-center items-start text-sm lg:gap-7 gap-4">
           <Link href="/">
             <p className={`navbar-link ${pathname === "/" || pathname === "/index" ? "active" : undefined}`}>
               Home
             </p>
           </Link>
-          {/* Add other links here */}
         </div>
 
-        {/* Auth-related Buttons */}
         <div className="text-sm flex lg:flex-row flex-col lg:items-center items-start lg:gap-8 gap-4 mt-10 lg:mt-0">
-          {user ? (
-            // If logged in, show username and logout button
+          {session ? (
             <>
-              <p className="navbar-link">Hey, {user.name}</p>
-              <button onClick={logout} className="navbar-link">
+              <p className="navbar-link text-[#504ED7] font-semibold">Hey, {session.user?.name}</p>
+              <button
+                onClick={() => signOut()}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300"
+              >
                 Logout
               </button>
             </>
           ) : (
-            // If not logged in, show login and register links
             <>
               <Link href="/login">
-                <p className={`navbar-link ${pathname === "/login" ? "active" : undefined}`}>
+                <p className={`px-4 py-2 border-2 rounded-lg border-[#504ED7] text-[#504ED7] hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/login" ? "bg-[#504ED7] text-white" : ""}`}>
                   Login
                 </p>
               </Link>
               <Link href="/register">
-                <p className={`px-6 py-2 border-2 rounded-full border-[#504ED7] ${pathname === "/register" ? "bg-[#504ED7] text-white" : "text-[#504ED7]"}`}>
+                <p className={`px-4 py-2 border-2 rounded-lg border-[#504ED7] text-[#504ED7] hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/register" ? "bg-[#504ED7] text-white" : ""}`}>
                   Register Now
                 </p>
               </Link>

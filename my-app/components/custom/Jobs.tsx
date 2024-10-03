@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import JobCard from "./Cards";
 import { data as jobData } from "../../app/data/index";
 import Link from "next/link";
-import { useAuth } from "@/app/context/AuthContext";
+import { useSession } from "next-auth/react"; // Importing useSession
 
 interface IJobCardProps {
   id: number;
@@ -21,7 +21,7 @@ interface IJobCardProps {
 }
 
 const Jobs: React.FC = () => {
-  const { user } = useAuth(); // Get user from auth context
+  const { data: session } = useSession(); // Get user session
   const [jobs, setJobs] = useState<IJobCardProps[]>([]);
   const [hoveredJobId, setHoveredJobId] = useState<number | null>(null); // State to track hovered job ID
 
@@ -76,20 +76,23 @@ const Jobs: React.FC = () => {
                 onMouseEnter={() => setHoveredJobId(job.id)}
                 onMouseLeave={() => setHoveredJobId(null)}
               >
-                <JobCard
-                  id={job.id}
-                  logo={job.logo}
-                  organization={job.organization}
-                  province={job.province}
-                  city={job.city}
-                  title={job.title}
-                  type={job.type}
-                  description={job.description}
-                  salary={job.salary}
-                  salaryType={job.salaryType}
-                  level={job.level}
-                />
-                {!user && hoveredJobId === job.id && (
+                <Link href={`/jobs/${job.id}`} passHref>
+                  <JobCard
+                    id={job.id}
+                    logo={job.logo}
+                    organization={job.organization}
+                    province={job.province}
+                    city={job.city}
+                    title={job.title}
+                    type={job.type}
+                    description={job.description}
+                    salary={job.salary}
+                    salaryType={job.salaryType}
+                    level={job.level}
+                  />
+                </Link>
+                {/* Show lock if the user is not logged in */}
+                {!session && hoveredJobId === job.id && (
                   <div className="absolute inset-0 flex justify-center items-center bg-gray-700 bg-opacity-75 text-white rounded-md">
                     <span>🔒 Locked - Please log in to view details</span>
                   </div>
@@ -99,17 +102,11 @@ const Jobs: React.FC = () => {
           </div>
         )}
       </div>
-      {user ? (
-        <Link href="/jobs">
-          <button className="border-2 border-blue-500 text-blue-500 rounded-full mb-10 px-6 py-2 transition-colors hover:bg-blue-100">
-            Find More Jobs
-          </button>
-        </Link>
-      ) : (
-        <div className="mb-10 text-center text-red-500">
-          Please log in to find more jobs.
-        </div>
-      )}
+      <Link href="/jobs">
+        <button className="border-2 border-blue-500 text-blue-500 rounded-full mb-10 px-6 py-2 transition-colors hover:bg-blue-100">
+          Find More Jobs
+        </button>
+      </Link>
     </div>
   );
 };

@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
+"use client"
+// import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { NextSeo } from "next-seo";
-import { AuthProvider } from "./context/AuthContext";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -16,26 +16,10 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export const metadata: Metadata = {
-  title: "Career Connect",
-  description: "A platform for job seekers and employers to connect."
-};
-
-const SEO = {
-  title: "Career Connect",
-  description: "A platform for job seekers and employers to connect.",
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://www.careerconnect.com/',
-    site_name: 'Career Connect',
-  },
-  twitter: {
-    handle: '@careerconnect',
-    site: '@careerconnect',
-    cardType: 'summary_large_image',
-  },
-};
+// export const metadata: Metadata = {
+//   title: "Career Connect",
+//   description: "A platform for job seekers and employers to connect.",
+// };
 
 export default function RootLayout({
   children,
@@ -44,14 +28,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* You can include any additional metadata or links here */}
-        <NextSeo {...SEO} />
-      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

@@ -3,20 +3,21 @@ import Navbar from '@/components/custom/Navbar';
 import { data } from '../../data/index';
 import { useParams, useRouter } from 'next/navigation';
 import Footer from '@/components/custom/Footer';
-import { useAuth } from '@/app/context/AuthContext';
+import { useSession } from "next-auth/react"; // Importing useSession
 import React from 'react';
 
 const JobDetails = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { user } = useAuth(); 
+  const { data: session } = useSession(); 
+  const jobId = Array.isArray(id) ? parseInt(id[0], 10) : parseInt(id, 10);
 
-  if (!user) {
+  if (!session) {
     router.push('/login'); 
-    return null;
+    return null; 
   }
 
-  const job = data.find((item) => item.id === parseInt(id as string));
+  const job = data.find((job) => job.id === jobId);
 
   if (!job) {
     return <div>Job not found</div>;
@@ -27,25 +28,31 @@ const JobDetails = () => {
       <Navbar/>
 
       <div className="flex w-full pl-0 md:pl-20 min-h-screen">
-        <div className="p-2 md:p-6">
-          {/* Job Title and Company */}
-          <div className="flex items-center space-x-4">
-            <div className="bg-blue-200 rounded-full w-16 h-16 flex items-center justify-center">
-              <span className="text-blue-600 text-xl font-bold">NB</span>
+        <div className="p-2 md:p-6 relative"> {/* Add relative positioning here */}
+          <div className="flex items-center justify-between"> {/* Use justify-between to space items */}
+            <div className="flex items-center space-x-4">
+              <div className="bg-blue-200 rounded-full w-16 h-16 flex items-center justify-center">
+                <span className="text-blue-600 text-xl font-bold">NB</span>
+              </div>
+              <div className="relative"> {/* Add relative positioning here for the job title */}
+                <h1 className="text-2xl font-semibold">{job.position}</h1>
+                <p className="text-gray-500">{job.name}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-semibold">{job.position}</h1>
-              <p className="text-gray-500">{job.name}</p>
-            </div>
+
+            <button
+              className="bg-blue-700  text-white py-2 px-4 w-20 rounded hover:bg-blue-900 transition duration-200"
+              onClick={() => alert('Application submitted!')} // Replace with actual application submission logic
+            >
+              Apply
+            </button>
           </div>
 
-          {/* Job Overview */}
           <section className="mt-6">
             <h2 className="text-lg font-semibold">Job Overview</h2>
             <p className="text-gray-700 mt-2">{job.jobOverview}</p>
           </section>
 
-          {/* Skills and Expertise */}
           <section className="mt-6">
             <h2 className="text-lg font-semibold">Skills and Expertise</h2>
             <div className="flex flex-col md:flex-row gap-2 mt-2 items-start">
@@ -60,7 +67,6 @@ const JobDetails = () => {
             </div>
           </section>
 
-          {/* Requirements */}
           <section className="mt-6">
             <h2 className="text-lg font-semibold">Requirements</h2>
             <ul className="list-disc list-inside mt-2 text-gray-700">
@@ -90,7 +96,6 @@ const JobDetails = () => {
             </p>
           </section>
 
-          {/* Employee Count */}
           <section className="mt-6">
             <h2 className="text-lg font-semibold">Estimated Company Total Employees</h2>
             <p className="text-gray-700 mt-2">{job.employeeCount} people</p>
