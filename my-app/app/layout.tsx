@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { NextSeo } from "next-seo";
 import { AuthProvider } from "./context/AuthContext";
 
 const geistSans = localFont({
@@ -16,8 +17,24 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Your App Title",
-  description: "Your app description here.",
+  title: "Career Connect",
+  description: "A platform for job seekers and employers to connect."
+};
+
+const SEO = {
+  title: "Career Connect",
+  description: "A platform for job seekers and employers to connect.",
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://www.careerconnect.com/',
+    site_name: 'Career Connect',
+  },
+  twitter: {
+    handle: '@careerconnect',
+    site: '@careerconnect',
+    cardType: 'summary_large_image',
+  },
 };
 
 export default function RootLayout({
@@ -29,6 +46,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* You can include any additional metadata or links here */}
+        <NextSeo {...SEO} />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
