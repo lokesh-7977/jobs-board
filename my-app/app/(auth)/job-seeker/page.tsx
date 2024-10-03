@@ -49,14 +49,13 @@ const Jobseeker = () => {
 
   const onSubmit = async (data: SignupFormData) => {
     const { passwordConfirmation, ...signupData } = data;
-    // Add role to the signupData
     const signupPayload = {
       ...signupData,
-      role: "jobseeker", // Set the role as 'jobseeker'
+      role: "jobseeker"
     };
     
     try {
-      const response = await axios.post("/api/register", signupPayload);
+      const response = await axios.post("/api/auth/register", signupPayload);
       toast.success("Account created successfully!");
       window.location.href = "/jobs";
     } catch (error) {

@@ -51,12 +51,14 @@ const Login = () => {
     });
 
     if (result?.error) {
-      // Handle error case, e.g., incorrect credentials
-      toast.error(result.error || "Failed to log in. Please try again.");
-    } else if (result?.ok) {
-      // Success: User logged in
+      toast.error("Failed to log in. Please try again.");
+    }
+    else if (result?.status === 400) {
+      toast.error("Invalid credentials. Please try again.");
+    }
+     else if (result?.ok) {
       toast.success("Logged in successfully!");
-      router.push("/"); // Redirect to homepage after successful login
+      router.push("/");
     }
   };
 
