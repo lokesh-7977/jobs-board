@@ -7,7 +7,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import Footer from "../../components/custom/Footer";
 import Navbar from "../../components/custom/Navbar";
 import JobCard from "./_components/job-card";
-import Filter from "./_components/filter"; // Adjust the import path as needed
+import Filter from "./_components/filter"; 
 import { data as jobData } from "../data/index";
 
 interface IJobCardProps {
@@ -34,7 +34,6 @@ const Jobs: React.FC = () => {
   const [minSalary, setMinSalary] = useState<number>(0);
 
   useEffect(() => {
-    // Transform data to IJobCardProps format
     const transformedJobs: IJobCardProps[] = jobData.map((job) => {
       const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
       let salaryNumber = 0;
@@ -48,7 +47,7 @@ const Jobs: React.FC = () => {
 
       return {
         id: job.id,
-        logo: "/path-to-logo-placeholder.png", // Replace with actual logo path
+        logo: "/path-to-logo-placeholder.png", 
         organization: job.name,
         province: job.companyLocation.province,
         city: job.companyLocation.city,
@@ -149,7 +148,7 @@ const Jobs: React.FC = () => {
       <div className="bg-gray-100 py-10 px-5">
         {jobs.length === 0 ? (
           <div className="bg-red-500 text-center text-white rounded-md py-3">
-            There's no job available.
+            Theres no job available.
           </div>
         ) : (
           <div className="grid gap-8 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">

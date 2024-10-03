@@ -47,8 +47,11 @@ export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: R
         email: user.email,
       },
     });
-  } catch (error: any) {
-    return res.status(500).json({ msg: "Server Error: " + error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ msg: "Server Error: " + error.message });
+    }
+    return res.status(500).json({ msg: "Unknown Server Error" });
   }
 };
 
@@ -70,7 +73,7 @@ export const login = async (req: Request<{}, {}, LoginRequestBody>, res: Respons
       return res.status(400).json({ msg: "Invalid Credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, config.jwt as string, { expiresIn: config.jwt_expiration as string });
+    const token = jwt.sign({ id: user._id }, config.jwt!, { expiresIn: "7d" });
 
     return res.json({
       token,
@@ -80,8 +83,11 @@ export const login = async (req: Request<{}, {}, LoginRequestBody>, res: Respons
         email: user.email,
       },
     });
-  } catch (error: any) {
-    return res.status(500).json({ msg: "Server Error: " + error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ msg: "Server Error: " + error.message });
+    }
+    return res.status(500).json({ msg: "Unknown Server Error" });
   }
 };
 
@@ -93,8 +99,11 @@ export const getUser = async (req: CustomRequest, res: Response): Promise<Respon
     }
 
     return res.status(200).json({ user });
-  } catch (error: any) {
-    return res.status(500).json({ msg: "Server Error: " + error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ msg: "Server Error: " + error.message });
+    }
+    return res.status(500).json({ msg: "Unknown Server Error" });
   }
 };
 
@@ -112,8 +121,11 @@ export const deleteUser = async (req: CustomRequest, res: Response): Promise<Res
     }
 
     return res.status(200).json({ msg: "User deleted successfully" });
-  } catch (error: any) {
-    return res.status(500).json({ msg: "Server Error: " + error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ msg: "Server Error: " + error.message });
+    }
+    return res.status(500).json({ msg: "Unknown Server Error" });
   }
 };
 
@@ -145,22 +157,21 @@ export const updateUser = async (req: CustomRequest, res: Response): Promise<Res
         email: updatedUser.email,
       },
     });
-  } catch (error: any) {
-    return res.status(500).json({ msg: "Server Error: " + error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ msg: "Server Error: " + error.message });
+    }
+    return res.status(500).json({ msg: "Unknown Server Error" });
   }
 };
 
 export const logOut = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const token = req.header("x-auth-token");
-    if (!token) {
-      return res.status(401).json({ msg: "No token, authorization denied" });
-    }
-
-    jwt.verify(token, config.jwt as string); // We don't need to assign to a variable here if not using the result.
-    
     return res.status(200).json({ msg: "Logged out successfully" });
-  } catch (error: any) {
-    return res.status(500).json({ msg: "Server Error: " + error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ msg: "Server Error: " + error.message });
+    }
+    return res.status(500).json({ msg: "Unknown Server Error" });
   }
 };

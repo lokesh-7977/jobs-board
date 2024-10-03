@@ -1,26 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
+"use client"; 
 import { useState } from 'react';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
-interface IProvinceData {
-  id: string;
-  nama: string;
-}
-
-interface ICityData {
-  id: string;
-  nama: string;
-}
-
-interface IDistrictData {
-  id: string;
-  nama: string;
-}
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 interface IFormInputs {
   name: string;
@@ -35,25 +23,48 @@ interface IFormInputs {
   postalCode: number;
   address: string;
   password: string;
-  passwordConfirmation: string;
+  passwordConfirmation?: string;
+  logo: string; 
 }
 
 const Organization = () => {
-  const [provinceData, setProvinceData] = useState<IProvinceData[]>([]);
-  const [cityData, setCityData] = useState<ICityData[]>([]);
-  const [districtData, setDistrictData] = useState<IDistrictData[]>([]);
-  const [avatar, setAvatar] = useState<File[]>([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IFormInputs>();
+  const { register, handleSubmit, formState: { errors } } = useForm<IFormInputs>();
 
-  const onSubmit = (data: IFormInputs) => {
-    console.log(data);
+  const router = useRouter();
+  const onSubmit = async (data: IFormInputs) => {
+    const { passwordConfirmation, postalCode, totalEmployee, ...dataToSubmit } = data;
+    
+    const formattedDataToSubmit = {
+      ...dataToSubmit,
+      postalCode: Number(postalCode), 
+      totalEmployee: Number(totalEmployee), 
+    };
+
+    console.log('Submitting:', formattedDataToSubmit);
+
+    try {
+      const response = await axios.post('http://localhost:4000/api/org/create', formattedDataToSubmit);
+      console.log('Response:', response); 
+      if (response.status === 201) {
+        toast.success('Organization registered successfully!');
+        router.push('/login')
+      } else {
+        console.error('Unexpected response status:', response.status); 
+        toast.error('Failed to register the organization.');
+      }
+    } catch (error) {
+      console.error('Submission error:', error); 
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Response data:', error.response.data); 
+        toast.error(`Error: ${error.response.data.message || 'An error occurred'}`);  
+      } else {
+        console.error('General error:', error); 
+        toast.error('An unexpected error occurred.');
+      }
+    }
   };
 
   return (
@@ -62,8 +73,8 @@ const Organization = () => {
       <div className="bg-white w-full max-w-[1000px] border border-gray-300 m-auto px-8 py-12">
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Organization Name and Email */}
-          <div className="flex md:flex-row flex-row md:items-center gap-7 md:mb-10 mb-7">
-            <div className="grid w-[28.3rem] gap-3">
+          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
+            <div className="flex-1">
               <Label htmlFor="name" className="text-sm">Organization Name</Label>
               <Input
                 id="name"
@@ -71,7 +82,7 @@ const Organization = () => {
               />
               {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
             </div>
-            <div className="grid w-[28.3rem] gap-3">
+            <div className="flex-1">
               <Label htmlFor="email" className="text-sm">Organization Email</Label>
               <Input
                 type="email"
@@ -82,6 +93,7 @@ const Organization = () => {
             </div>
           </div>
 
+          {/* Password and Password Confirmation */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="password" className="text-sm">Password</Label>
@@ -90,7 +102,7 @@ const Organization = () => {
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   {...register('password', { required: 'Password is required' })}
-                  className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-transparent focus:ring-0 focus:outline-none"
+                  className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-black focus:ring-0 focus:outline-none"
                 />
                 {showPassword ? (
                   <AiFillEyeInvisible onClick={() => setShowPassword(false)} className="text-gray-400 cursor-pointer" />
@@ -107,7 +119,7 @@ const Organization = () => {
                   type={showPasswordConfirmation ? 'text' : 'password'}
                   id="passwordConfirmation"
                   {...register('passwordConfirmation', { required: 'Password Confirmation is required' })}
-                  className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-transparent focus:ring-0 focus:outline-none"
+                  className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-black focus:ring-0 focus:outline-none"
                 />
                 {showPasswordConfirmation ? (
                   <AiFillEyeInvisible onClick={() => setShowPasswordConfirmation(false)} className="cursor-pointer text-gray-500" />
@@ -132,7 +144,7 @@ const Organization = () => {
               {errors.phoneNumber && <p className="text-red-500 text-xs">{errors.phoneNumber.message}</p>}
             </div>
             <div className="flex-1">
-              <Label htmlFor="createdDate" className="text-sm">Organization Created Date</Label>
+              <Label htmlFor="createdDate" className="text-sm">Created Date</Label>
               <Input
                 type="date"
                 id="createdDate"
@@ -143,21 +155,20 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Total Employees and Industry Type */}
+          {/* Total Employees, Industry Type, and Location */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
-              <Label htmlFor="totalEmployee" className="text-sm">Estimated Organization Total Employees</Label>
+              <Label htmlFor="totalEmployee" className="text-sm">Total Employees</Label>
               <Input
                 type="number"
                 id="totalEmployee"
-                {...register('totalEmployee', { required: 'Total Employees are required', min: { value: 1, message: 'Total Employees must be at least 1' } })}
+                {...register('totalEmployee', { required: 'Total Employees is required' })}
                 className="mt-3"
-                min={1}
               />
               {errors.totalEmployee && <p className="text-red-500 text-xs">{errors.totalEmployee.message}</p>}
             </div>
             <div className="flex-1">
-              <Label htmlFor="industryType" className="text-sm">Organization Industry Type</Label>
+              <Label htmlFor="industryType" className="text-sm">Industry Type</Label>
               <Input
                 id="industryType"
                 {...register('industryType', { required: 'Industry Type is required' })}
@@ -167,32 +178,46 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Province, City, District, and Postal Code */}
+          {/* Address and Logo */}
+          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
+            <div className="flex-1">
+              <Label htmlFor="address" className="text-sm">Address</Label>
+              <Input
+                id="address"
+                {...register('address', { required: 'Address is required' })}
+                className="mt-3"
+              />
+              {errors.address && <p className="text-red-500 text-xs">{errors.address.message}</p>}
+            </div>
+            <div className="flex-1">
+              <Label htmlFor="logo" className="text-sm">Logo (URL)</Label>
+              <Input
+                id="logo"
+                {...register('logo', { required: 'Logo URL is required' })}
+                className="mt-3"
+              />
+              {errors.logo && <p className="text-red-500 text-xs">{errors.logo.message}</p>}
+            </div>
+          </div>
+
+          {/* Location Fields */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="province" className="text-sm">Province</Label>
-              <select
+              <Input
+                id="province"
                 {...register('province', { required: 'Province is required' })}
-                className="w-full mt-3 p-3 border border-gray-300 rounded-md"
-              >
-                <option value="">- Select Province -</option>
-                {provinceData.map(item => (
-                  <option key={item.id} value={item.id}>{item.nama}</option>
-                ))}
-              </select>
+                className="mt-3"
+              />
               {errors.province && <p className="text-red-500 text-xs">{errors.province.message}</p>}
             </div>
             <div className="flex-1">
               <Label htmlFor="city" className="text-sm">City</Label>
-              <select
+              <Input
+                id="city"
                 {...register('city', { required: 'City is required' })}
-                className="w-full mt-3 p-3 border border-gray-300 rounded-md"
-              >
-                <option value="">- Select City -</option>
-                {cityData.map(item => (
-                  <option key={item.id} value={item.id}>{item.nama}</option>
-                ))}
-              </select>
+                className="mt-3"
+              />
               {errors.city && <p className="text-red-500 text-xs">{errors.city.message}</p>}
             </div>
           </div>
@@ -200,15 +225,11 @@ const Organization = () => {
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="district" className="text-sm">District</Label>
-              <select
+              <Input
+                id="district"
                 {...register('district', { required: 'District is required' })}
-                className="w-full mt-3 p-3 border border-gray-300 rounded-md"
-              >
-                <option value="">- Select District -</option>
-                {districtData.map(item => (
-                  <option key={item.id} value={item.id}>{item.nama}</option>
-                ))}
-              </select>
+                className="mt-3"
+              />
               {errors.district && <p className="text-red-500 text-xs">{errors.district.message}</p>}
             </div>
             <div className="flex-1">
@@ -223,32 +244,8 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Address */}
-          <div className="mb-7">
-            <Label htmlFor="address" className="text-sm">Address</Label>
-            <Input
-              id="address"
-              {...register('address', { required: 'Address is required' })}
-              className="mt-3"
-            />
-            {errors.address && <p className="text-red-500 text-xs">{errors.address.message}</p>}
-          </div>
-
-          {/* Upload Avatar */}
-          <div className="mb-7">
-            <Label className="text-sm">Upload Organization Avatar</Label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setAvatar(e.target.files ? Array.from(e.target.files) : [])}
-              className="mt-3 w-[15rem]"
-            />
-          </div>
-
           {/* Submit Button */}
-          <Button type="submit" className="w-full bg-[#504ED7] text-white mt-6">
-            Register Organization
-          </Button>
+          <Button type="submit" className="bg-[#504ED7] text-white mt-10">Create Organization</Button>
         </form>
       </div>
     </div>

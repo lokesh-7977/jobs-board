@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import React, { useState, useEffect } from "react";
 import JobCard from "./Cards";
 import { data as jobData } from "../../app/data/index";
 import Link from "next/link";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface IJobCardProps {
   id: number;
@@ -21,7 +21,10 @@ interface IJobCardProps {
 }
 
 const Jobs: React.FC = () => {
+  const { user } = useAuth(); // Get user from auth context
   const [jobs, setJobs] = useState<IJobCardProps[]>([]);
+  const [hoveredJobId, setHoveredJobId] = useState<number | null>(null); // State to track hovered job ID
+
   useEffect(() => {
     const transformedJobs: IJobCardProps[] = jobData.map((job) => {
       const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
@@ -36,7 +39,6 @@ const Jobs: React.FC = () => {
 
       return {
         id: job.id,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         logo: (job as any).companyLogo || "",
         organization: job.name,
         province: job.companyLocation.province,
@@ -54,23 +56,27 @@ const Jobs: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <div className="flex flex-col justify-center items-center w-full ml-3 md:ml-0 ">
-        <div className=" py-10 px-5 ">
-          <div className="flex items-center justify-center w-full mb-10">
-            <h1 className="text-5xl font-bold text-gray-800 mb-5">
-              <span className="text-violet-600 mr-3">Latest</span>Jobs
-            </h1>
+    <div className="flex flex-col justify-center items-center w-full ml-3 md:ml-0 ">
+      <div className="py-10 px-5 ">
+        <div className="flex items-center justify-center w-full mb-10">
+          <h1 className="text-5xl font-bold text-gray-800 mb-5">
+            <span className="text-violet-600 mr-3">Latest</span>Jobs
+          </h1>
+        </div>
+        {jobs.length === 0 ? (
+          <div className="bg-red-500 text-center text-white rounded-md py-3">
+            There&apos;s no job available.
           </div>
-          {jobs.length === 0 ? (
-            <div className="bg-red-500 text-center text-white rounded-md py-3">
-              There&apos;s no job available.
-            </div>
-          ) : (
-            <div className="grid gap-8 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-              {jobs.map((job) => (
+        ) : (
+          <div className="grid gap-8 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+            {jobs.map((job) => (
+              <div
+                key={job.id}
+                className="relative"
+                onMouseEnter={() => setHoveredJobId(job.id)}
+                onMouseLeave={() => setHoveredJobId(null)}
+              >
                 <JobCard
-                  key={job.id}
                   id={job.id}
                   logo={job.logo}
                   organization={job.organization}
@@ -83,17 +89,28 @@ const Jobs: React.FC = () => {
                   salaryType={job.salaryType}
                   level={job.level}
                 />
-              ))}
-            </div>
-          )}
-        </div>
+                {!user && hoveredJobId === job.id && (
+                  <div className="absolute inset-0 flex justify-center items-center bg-gray-700 bg-opacity-75 text-white rounded-md">
+                    <span>🔒 Locked - Please log in to view details</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {user ? (
         <Link href="/jobs">
           <button className="border-2 border-blue-500 text-blue-500 rounded-full mb-10 px-6 py-2 transition-colors hover:bg-blue-100">
             Find More Jobs
           </button>
         </Link>
-      </div>
-    </>
+      ) : (
+        <div className="mb-10 text-center text-red-500">
+          Please log in to find more jobs.
+        </div>
+      )}
+    </div>
   );
 };
 

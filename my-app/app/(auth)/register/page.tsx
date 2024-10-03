@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import Navbar from "@/components/custom/Navbar";
+import Footer from "@/components/custom/Footer";
 
 const registerSchema = z.object({
   accountType: z.enum(["jobseeker", "organization"], {
@@ -34,6 +36,8 @@ const Register = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="bg-[#FaFaFa] px-10 py-14 grid place-content-center h-screen">
       <div className="w-full max-w-[1000px] m-auto text-center">
         <h1 className=" mb-3 text-lg font-semibold">We&apos;re glad you&apos;re here!</h1>
@@ -106,6 +110,8 @@ const Register = () => {
         </form>
       </div>
     </div>
+    <Footer />
+    </>
   );
 };
 

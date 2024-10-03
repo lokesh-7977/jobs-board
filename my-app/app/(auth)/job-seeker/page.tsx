@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible, AiOutlineUser } from "react-icons/ai";
 import { BiLock } from "react-icons/bi";
 import Link from "next/link";
@@ -17,7 +16,6 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import React from "react";
 
-// Define validation schema using Zod
 const signupSchema = z
   .object({
     name: z.string().nonempty({ message: "Name is required" }),
@@ -60,7 +58,7 @@ const Jobseeker = () => {
       );
       console.log("Response:", response);
       toast.success("Account created successfully!");
-      window.location.href = "/";
+      window.location.href = "/jobs";
     } catch (error) {
       console.error("Signup error:", error);
       toast.error("Failed to create account");

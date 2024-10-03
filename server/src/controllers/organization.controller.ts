@@ -1,85 +1,78 @@
-import { Request, Response } from 'express'
-import Organization from '../models/organization.model'
+import { Request, Response } from 'express';
+import Organization from '../models/organization.model';
+import bcrypt from 'bcrypt'; // Import bcrypt
 
-export const createOrganization = async (req: Request, res: Response) => {
-  try {
-    const { user, phoneNumber, createdDate, totalEmployee, industryType, address, description, status } = req.body
+export const createOrganization = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const {
+            name,
+            email,
+            password,
+            phoneNumber,
+            createdDate,
+            address,
+            city,
+            district,
+            industryType,
+            logo,
+            postalCode,
+            province,
+            totalEmployee,
+            description,
+            image
+        } = req.body;
 
-    const newOrganization = new Organization({
-      user,
-      phoneNumber,
-      createdDate,
-      totalEmployee,
-      industryType,
-      address,
-      description,
-      status: status || 'on review' 
-    })
+        // Validate the required fields
+        if (!name || !email || !password || !phoneNumber || !createdDate || !address || !city || !district || !industryType || !logo || !postalCode || !province || !totalEmployee) {
+            res.status(400).json({ message: 'All required fields must be provided.' });
+            return;
+        }
 
-    const savedOrganization = await newOrganization.save()
-    res.status(201).json(savedOrganization)
-  } catch (error: any) {
-    res.status(400).json({ message: error.message })
-  }
-}
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
 
-export const getAllOrganizations = async (req: Request, res: Response) => {
-  try {
-    const organizations = await Organization.find().populate('user')
-    res.status(200).json(organizations)
-  } catch (error: any) {
-    res.status(500).json({ message: error.message })
-  }
-}
+        const newOrganization = new Organization({
+            name,
+            email,
+            password: hashedPassword, // Save the hashed password
+            phoneNumber,
+            createdDate,
+            address,
+            city,
+            district,
+            industryType,
+            logo,
+            postalCode,
+            province,
+            totalEmployee,
+            description,
+            image
+        });
 
-export const getOrganizationById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const organization = await Organization.findById(id).populate('user')
+        const savedOrganization = await newOrganization.save();
 
-    if (!organization) {
-      return res.status(404).json({ message: 'Organization not found' })
+        // Send response with the organization id and the saved organization data
+        res.status(201).json({
+            id: savedOrganization._id, // Return the _id
+            organization: savedOrganization // Return the full organization data
+        });
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
     }
-
-    res.status(200).json(organization)
-  } catch (error: any) {
-    res.status(500).json({ message: error.message })
-  }
-}
-
-export const updateOrganization = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const { phoneNumber, totalEmployee, industryType, address, description, status } = req.body
-
-    const updatedOrganization = await Organization.findByIdAndUpdate(
-      id,
-      { phoneNumber, totalEmployee, industryType, address, description, status },
-      { new: true, runValidators: true } 
-    )
-
-    if (!updatedOrganization) {
-      return res.status(404).json({ message: 'Organization not found' })
-    }
-
-    res.status(200).json(updatedOrganization)
-  } catch (error: any) {
-    res.status(400).json({ message: error.message })
-  }
-}
+};
 
 export const deleteOrganization = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
+    try {
+        const { id } = req.params;
 
-    const deletedOrganization = await Organization.findByIdAndDelete(id)
+        const deletedOrganization = await Organization.findByIdAndDelete(id);
 
-    if (!deletedOrganization) {
-      return res.status(404).json({ message: 'Organization not found' })
+        if (!deletedOrganization) {
+            return res.status(404).json({ message: 'Organization not found' });
+        }
+
+        res.status(200).json({ message: 'Organization deleted successfully' });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
     }
-
-    res.status(200).json({ message: 'Organization deleted successfully' })
-  } catch (error: any) {
-    res.status(500).json({ message: error.message })
-  }
-}
+};
