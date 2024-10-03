@@ -25,6 +25,7 @@ interface IFormInputs {
   password: string;
   passwordConfirmation?: string;
   logo: string; 
+  role: string; 
 }
 
 const Organization = () => {
@@ -36,32 +37,26 @@ const Organization = () => {
   const router = useRouter();
   const onSubmit = async (data: IFormInputs) => {
     const { passwordConfirmation, postalCode, totalEmployee, ...dataToSubmit } = data;
-    
+
     const formattedDataToSubmit = {
       ...dataToSubmit,
       postalCode: Number(postalCode), 
-      totalEmployee: Number(totalEmployee), 
+      totalEmployee: Number(totalEmployee),
+      role: 'employer', 
     };
 
-    console.log('Submitting:', formattedDataToSubmit);
-
     try {
-      const response = await axios.post('http://localhost:4000/api/org/create', formattedDataToSubmit);
-      console.log('Response:', response); 
-      if (response.status === 201) {
+      const response = await axios.post('/api/register', formattedDataToSubmit);
+      if (response.status === 200 || response.status === 201) {
         toast.success('Organization registered successfully!');
-        router.push('/login')
+        router.push('/dashboard');
       } else {
-        console.error('Unexpected response status:', response.status); 
         toast.error('Failed to register the organization.');
       }
     } catch (error) {
-      console.error('Submission error:', error); 
       if (axios.isAxiosError(error) && error.response) {
-        console.error('Response data:', error.response.data); 
         toast.error(`Error: ${error.response.data.message || 'An error occurred'}`);  
       } else {
-        console.error('General error:', error); 
         toast.error('An unexpected error occurred.');
       }
     }
@@ -69,10 +64,9 @@ const Organization = () => {
 
   return (
     <div className="bg-[#FAFAFA] px-10 py-14">
-      <h1 className="text-center mb-10 text-2xl font-semibold text-[#504ED7]">Recruit Better With Job Seek</h1>
+      <h1 className="text-center mb-10 text-2xl font-semibold text-[#504ED7]">Recruit Better With Carrers Connect</h1>
       <div className="bg-white w-full max-w-[1000px] border border-gray-300 m-auto px-8 py-12">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Organization Name and Email */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="name" className="text-sm">Organization Name</Label>
@@ -93,7 +87,6 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Password and Password Confirmation */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="password" className="text-sm">Password</Label>
@@ -131,7 +124,6 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Phone Number and Created Date */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="phoneNumber" className="text-sm">Organization Phone Number</Label>
@@ -155,7 +147,6 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Total Employees, Industry Type, and Location */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="totalEmployee" className="text-sm">Total Employees</Label>
@@ -178,7 +169,6 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Address and Logo */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="address" className="text-sm">Address</Label>
@@ -200,7 +190,6 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Location Fields */}
           <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
             <div className="flex-1">
               <Label htmlFor="province" className="text-sm">Province</Label>
@@ -244,8 +233,9 @@ const Organization = () => {
             </div>
           </div>
 
-          {/* Submit Button */}
-          <Button type="submit" className="bg-[#504ED7] text-white mt-10">Create Organization</Button>
+          <Input type="hidden" value="employer" {...register('role')} />
+
+          <Button className="w-full mt-5 bg-[#504ED7] hover:bg-[#3e3b8f] text-white">Create Organization</Button>
         </form>
       </div>
     </div>

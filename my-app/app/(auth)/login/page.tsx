@@ -39,7 +39,7 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/sign-in",
+        "/api/login",
         data
       );
   

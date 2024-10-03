@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  jobSeeker
+  employer
+}
+
+model User {
+  id            String    @id @default(cuid()) @map("_id")
+  email         String    @unique
+  name          String
+  password      String
+  image         String?   @default("https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png")
+  province      String?
+  city          String?
+  district      String?
+  postalCode    String?
+  createdOrg    DateTime?
+  address       String?
+  industryType  String?
+  totalEmployee Int?
+  description   String?
+  role          Role      @default(jobSeeker)
+
+  jobs          Jobs[]            @relation("UserJobs")
+  applications  JobApplications[]
+  JobApplicants JobApplicants[]
+}
+
+model Jobs {
+  id             String   @id @default(cuid()) @map("_id")
+  title          String
+  description    String // No @db.Text annotation
+  location       String
+  salary         Int
+  companyId      String   @default(cuid())
+  employmentType String
+  jobLevel       String
+  skills         String[]
+  requirements   String
+  keywords       String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  userId         String
+
+  user          User              @relation("UserJobs", fields: [userId], references: [id])
+  applications  JobApplications[]
+  JobApplicants JobApplicants[]
+}
+
+model JobApplications {
+  id        String   @id @default(cuid()) @map("_id")
+  jobId     String
+  userId    String
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  job  Jobs @relation(fields: [jobId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model JobApplicants {
+  id          String   @id @default(cuid()) @map("_id")
+  jobId       String
+  userId      String
+  resume      String
+  coverLetter String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  job  Jobs @relation(fields: [jobId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}

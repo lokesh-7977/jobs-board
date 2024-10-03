@@ -43,24 +43,23 @@ const Jobseeker = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
 
   const onSubmit = async (data: SignupFormData) => {
     const { passwordConfirmation, ...signupData } = data;
+    // Add role to the signupData
+    const signupPayload = {
+      ...signupData,
+      role: "jobseeker", // Set the role as 'jobseeker'
+    };
+    
     try {
-      console.log("Sending data:", signupData);
-      const response = await axios.post(
-        "http://localhost:4000/api/auth/sign-up",
-        signupData
-      );
-      console.log("Response:", response);
+      const response = await axios.post("/api/register", signupPayload);
       toast.success("Account created successfully!");
       window.location.href = "/jobs";
     } catch (error) {
-      console.error("Signup error:", error);
       toast.error("Failed to create account");
     }
   };
