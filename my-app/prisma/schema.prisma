@@ -1,6 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,21 +19,24 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid()) @map("_id")
-  email         String    @unique
-  name          String
-  password      String
-  image         String?   @default("https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png")
-  province      String?
-  city          String?
-  district      String?
-  postalCode    String?
-  createdOrg    DateTime?
-  address       String?
-  industryType  String?
-  totalEmployee Int?
-  description   String?
-  role          Role      @default(jobSeeker)
+  id                String    @id @default(cuid()) @map("_id")
+  email             String    @unique
+  verifyTokenExpiry DateTime?
+  verifyToken       String?
+  name              String
+  password          String
+  image             String?   @default("https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png")
+  province          String?
+  city              String?
+  district          String?
+  postalCode        String?
+  createdOrg        String?
+  address           String?
+  industryType      String?
+  totalEmployee     Int?
+  description       String?
+  role              Role      @default(jobSeeker)
+  
 
   jobs          Jobs[]            @relation("UserJobs")
   applications  JobApplications[]
@@ -40,7 +46,7 @@ model User {
 model Jobs {
   id             String   @id @default(cuid()) @map("_id")
   title          String
-  description    String // No @db.Text annotation
+  description    String
   location       String
   salary         Int
   companyId      String   @default(cuid())
@@ -71,13 +77,12 @@ model JobApplications {
 }
 
 model JobApplicants {
-  id          String   @id @default(cuid()) @map("_id")
-  jobId       String
-  userId      String
-  resume      String
-  coverLetter String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid()) @map("_id")
+  jobId     String
+  userId    String
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   job  Jobs @relation(fields: [jobId], references: [id])
   user User @relation(fields: [userId], references: [id])

@@ -46,7 +46,7 @@ const Organization = () => {
     };
 
     try {
-      const response = await axios.post('/api/register', formattedDataToSubmit);
+      const response = await axios.post('/api/auth/register', formattedDataToSubmit);
       if (response.status === 200 || response.status === 201) {
         toast.success('Organization registered successfully!');
         router.push('/dashboard');
