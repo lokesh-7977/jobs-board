@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET(_request: NextRequest) {
   try {
     const jobs = await prisma.jobs.findMany({
-      orderBy: { createdAt: "desc" }, 
+      orderBy: { createdAt: "desc" },
       include: {
         user: {
           select: {
@@ -26,6 +26,7 @@ export async function GET(_request: NextRequest) {
     });
     return NextResponse.json(jobs, { status: 200 });
   } catch (error) {
+    console.error(error); 
     return NextResponse.json({ error: "Error fetching jobs" }, { status: 500 });
   }
 }
@@ -61,6 +62,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(job, { status: 201 });
   } catch (error) {
+    console.error(error); // Log the error for debugging
     return NextResponse.json({ error: "Error creating job" }, { status: 500 });
   }
 }
@@ -93,6 +95,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
     return NextResponse.json(updatedJob, { status: 200 });
   } catch (error) {
+    console.error(error); 
     return NextResponse.json({ error: "Error updating job" }, { status: 500 });
   }
 }
@@ -100,17 +103,22 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 export async function DELETE(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
-  
+
   try {
-    const jobExists = await prisma.jobs.findUnique({ where: { id: id || undefined } });
+    if (!id) {
+      return NextResponse.json({ error: "Job ID is required" }, { status: 400 });
+    }
+
+    const jobExists = await prisma.jobs.findUnique({ where: { id } });
 
     if (!jobExists) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
 
-    await prisma.jobs.delete({ where: { id : id || undefined } });
+    await prisma.jobs.delete({ where: { id } });
     return NextResponse.json({ message: "Job deleted successfully" }, { status: 204 });
   } catch (error) {
+    console.error(error); 
     return NextResponse.json({ error: "Error deleting job" }, { status: 500 });
   }
 }
