@@ -16,7 +16,10 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import React from "react";
+import Image from "next/image"; // Ensure you import Image from Next.js
+import QR from "./../../../dummy_qr_code.png";
 
+// Define validation schema
 const signupSchema = z
   .object({
     name: z.string().nonempty({ message: "Name is required" }),
@@ -38,6 +41,8 @@ type SignupFormData = z.infer<typeof signupSchema>;
 const Jobseeker = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false); // To track password confirmation state
+  const [utrNumber, setUtrNumber] = useState(""); // Track UTR number input
   const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
@@ -60,6 +65,13 @@ const Jobseeker = () => {
       } else {
         toast.error("Failed to create account");
       }
+    }
+  };
+
+  const handlePasswordConfirmationBlur = () => {
+    // Check if passwords match
+    if (errors.passwordConfirmation?.message === undefined) {
+      setIsPasswordConfirmed(true); // Allow UTR input and QR code to display
     }
   };
 
@@ -128,6 +140,7 @@ const Jobseeker = () => {
                     id="passwordConfirmation"
                     type={showPasswordConfirmation ? "text" : "password"}
                     {...register("passwordConfirmation")}
+                    onBlur={handlePasswordConfirmationBlur} // Trigger password confirmation check
                     placeholder="Password confirmation"
                     className={`outline-0 w-full border-none bg-none text-sm h-10 pr-3 ${errors.passwordConfirmation ? "border-red-500 " : ""}`}
                   />
@@ -140,6 +153,39 @@ const Jobseeker = () => {
               </Label>
               {errors.passwordConfirmation && <p className="text-red-500 text-center text-sm">{errors.passwordConfirmation.message}</p>}
             </div>
+
+            {/* Show QR code and UTR input only after password confirmation */}
+            {isPasswordConfirmed && (
+              <>
+                <div className="flex justify-center mb-7">
+                  <Image
+                    src={QR}
+                    alt="QR Code for Payment"
+                    width={200}
+                    height={200}
+                  />
+                </div>
+                <div className="mb-7">
+                  <Label htmlFor="utrNumber" className="flex items-center gap-3">
+                    <BiLock className="text-lg text-gray-500" />
+                    <Input
+                      id="utrNumber"
+                      value={utrNumber}
+                      onChange={(e) => setUtrNumber(e.target.value)}
+                      type="text"
+                      placeholder="UTR Number"
+                      className={`outline-0 w-full text-sm h-10 `}
+                    />
+                  </Label>
+                 
+                    
+                </div>
+
+                <div className="text-center text-lg text-gray-600 mt-3">
+                  Payment: ₹499
+                </div>
+              </>
+            )}
 
             <Button type="submit" className="bg-[#504ED7] hover:bg-[#2825C2] cursor-pointer transition-[background] text-sm w-full py-3 text-white rounded-sm mt-7">
               Sign Up
@@ -158,4 +204,4 @@ const Jobseeker = () => {
   );
 };
 
-export default Jobseeker;
+export default Jobseeker
