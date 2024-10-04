@@ -16,10 +16,9 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import React from "react";
-import Image from "next/image"; // Ensure you import Image from Next.js
+import Image from "next/image"; 
 import QR from "./../../../dummy_qr_code.png";
 
-// Define validation schema
 const signupSchema = z
   .object({
     name: z.string().nonempty({ message: "Name is required" }),
@@ -155,7 +154,6 @@ const Jobseeker = () => {
             </div>
 
             {/* Show QR code and UTR input only after password confirmation */}
-            {isPasswordConfirmed && (
               <>
                 <div className="flex justify-center mb-7">
                   <Image
@@ -185,7 +183,6 @@ const Jobseeker = () => {
                   Payment: ₹499
                 </div>
               </>
-            )}
 
             <Button type="submit" className="bg-[#504ED7] hover:bg-[#2825C2] cursor-pointer transition-[background] text-sm w-full py-3 text-white rounded-sm mt-7">
               Sign Up
