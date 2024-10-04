@@ -22,12 +22,12 @@ const Hero = () => {
         style={{ lineHeight: "70px" }}
         className="md:text-5xl text-3xl text-center font-medium mb-7"
       >
-        Get The <span className="text-[#504ED7]">Right Job</span> <br className="hidden md:block" />{" "}
-        You Deserve
+        {/* Get The <span className="text-[#504ED7]">Right Job</span> <br className="hidden md:block" />{" "}
+        You Deserve */}
+
+        Find Your Dream Job with  with Career Connects
       </h1>
-      <p className="text-gray-400 text-sm text-center">
-        1,850,750 jobs listed here! Your dream job is waiting
-      </p>
+    
 
       <div className="w-full max-w-[800px] m-auto bg-white shadow-xl border border-gray-200 md:rounded-full rounded-md md:h-16 h-auto md:py-0 py-6 px-4 mt-12">
         <form
@@ -41,7 +41,7 @@ const Hero = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Job title or keyword"
-              className="outline-0 h-full px-2 w-full text-sm border-none"
+              className="outline-none h-full px-2 w-full text-sm border-none"
             />
           </div>
           <Button type="submit" className="bg-[#504ED7] hover:bg-[#2825C2] transition-[background] text-white text-sm px-6 py-2 rounded-full outline-0">

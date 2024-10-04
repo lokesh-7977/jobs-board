@@ -26,9 +26,9 @@ const Navbar = () => {
   }, [openSidebar]);
 
   return (
-    <div className="flex items-center justify-between gap-10 lg:px-16 pl-4 pr-7 z-[999] py-3 bg-white sticky top-0 shadow-lg">
+    <div className="flex items-center justify-between gap-10 lg:px-16 pl-4 pr-7 z-[999] py-3 bg-[#504ED7] sticky top-0 shadow-lg">
       <div onClick={() => router.push("/")} className="flex items-center cursor-pointer">
-        <h1 className="text-2xl font-bold text-[#504ED7]">Career Connect</h1>
+        <h1 className="text-2xl font-bold text-white">Career Connect</h1>
       </div>
 
       <div onClick={() => setOpenSidebar(true)} className="lg:hidden block">
@@ -39,7 +39,7 @@ const Navbar = () => {
         ref={sidebarRef}
         className={`lg:static fixed top-0 ${
           openSidebar ? "right-0" : "-right-[3000px]"
-        } transition-all bottom-0 lg:shadow-none shadow-xl lg:w-auto w-[250px] lg:p-0 p-7 bg-white lg:flex lg:flex-1`}
+        } transition-all bottom-0 lg:shadow-none shadow-xl lg:w-auto w-[250px] lg:p-0 p-7 bg-[#504ED7] lg:flex lg:flex-1`}
       >
         <AiOutlineClose
           onClick={() => setOpenSidebar(false)}
@@ -50,7 +50,7 @@ const Navbar = () => {
         <div className="flex-1 lg:flex-row flex-col flex lg:items-center items-start text-sm lg:gap-7 gap-4">
           <Link href="/">
             <p className={`navbar-link ${pathname === "/" || pathname === "/index" ? "active" : undefined}`}>
-              Home
+            
             </p>
           </Link>
         </div>
@@ -58,7 +58,7 @@ const Navbar = () => {
         <div className="text-sm flex lg:flex-row flex-col lg:items-center items-start lg:gap-8 gap-4 mt-10 lg:mt-0">
           {session ? (
             <>
-              <p className="navbar-link text-[#504ED7] font-semibold">Hey, {session.user?.name}</p>
+              <p className="navbar-link text-white font-semibold">Hey, {session.user?.name}</p>
               <button
                 onClick={() => signOut()}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300"
@@ -69,12 +69,12 @@ const Navbar = () => {
           ) : (
             <>
               <Link href="/login">
-                <p className={`px-4 py-2 border-2 rounded-lg border-[#504ED7] text-[#504ED7] hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/login" ? "bg-[#504ED7] text-white" : ""}`}>
+                <p className={`px-4 py-2  rounded-lg  text-white hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/login" ? "bg-[#504ED7] text-white" : ""}`}>
                   Login
                 </p>
               </Link>
               <Link href="/register">
-                <p className={`px-4 py-2 border-2 rounded-lg border-[#504ED7] text-[#504ED7] hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/register" ? "bg-[#504ED7] text-white" : ""}`}>
+                <p className={`px-4 py-2  rounded-lg  text-white hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/register" ? "bg-[#504ED7] text-white" : ""}`}>
                   Register Now
                 </p>
               </Link>

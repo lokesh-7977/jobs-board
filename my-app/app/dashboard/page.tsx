@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Footer from "@/components/custom/Footer";
-import React from "react";
 import Navbar from "@/components/custom/Navbar";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 const Dashboard = () => {
   const [jobTitle, setJobTitle] = useState("");
@@ -18,7 +18,6 @@ const Dashboard = () => {
   const [skills, setSkills] = useState<string | null>(null);
   const [requirements, setRequirements] = useState<string | null>(null);
   const [keywords, setKeywords] = useState<string | null>(null);
-  const [userId, setUserId] = useState()
   const [jobs, setJobs] = useState<Job[]>([]);
   const [editingJobId, setEditingJobId] = useState<number | null>(null);
 
@@ -35,24 +34,26 @@ const Dashboard = () => {
     keywords?: string | null;
   }
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const response = await fetch("/api/jobs");
-        const data = await response.json();
-        console.log("Fetched jobs:", data);
-        setJobs(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Failed to fetch jobs:", error);
-      }
-    };
+  const router = useRouter();
 
-    fetchJobs();
+  useEffect(() => {
+    // Load jobs from local storage on component mount
+    const storedJobs = localStorage.getItem("jobs");
+    if (storedJobs) {
+      setJobs(JSON.parse(storedJobs));
+    }
   }, []);
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  useEffect(() => {
+    // Update local storage whenever jobs change
+    localStorage.setItem("jobs", JSON.stringify(jobs));
+  }, [jobs]);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     const newJob = {
+      id: editingJobId !== null ? editingJobId : Date.now(),
       title: jobTitle,
       description: jobDescription,
       location,
@@ -62,24 +63,14 @@ const Dashboard = () => {
       skills,
       requirements,
       keywords,
-      userId,
     };
 
-    const response = await fetch(editingJobId ? `/api/jobs/${editingJobId}` : "/api/jobs", {
-      method: editingJobId ? "PATCH" : "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newJob),
-    });
-
-    if (response.ok) {
-      const jobData = await response.json();
-      if (editingJobId) {
-        setJobs(jobs.map((job) => (job.id === editingJobId ? jobData : job)));
-      } else {
-        setJobs([...jobs, jobData]);
-      }
+    if (editingJobId) {
+      setJobs((prevJobs) =>
+        prevJobs.map((job) => (job.id === editingJobId ? newJob : job))
+      );
+    } else {
+      setJobs((prevJobs) => [...prevJobs, newJob]);
     }
 
     resetForm();
@@ -111,18 +102,16 @@ const Dashboard = () => {
     setEditingJobId(job.id);
   };
 
-  const handleDelete = async (jobId: number) => {
-    const response = await fetch(`/api/jobs?id=${jobId}`, {
-      method: "DELETE",
-    });
-
-    if (response.ok) {
-      setJobs(jobs.filter((job) => job.id !== jobId));
-    }
+  const handleDelete = (jobId: number) => {
+    setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
   };
 
   const handleViewApplicants = (jobId: number) => {
-    alert(`View applicants for job ID: ${jobId}`);
+    router.push(`/applicants/${jobId}`); // Navigate to the applicants page for the job
+  };
+
+  const handleViewJobDetails = (jobId: number) => {
+    router.push(`/jobs/${jobId}`); // Navigate to the job details page
   };
 
   return (
@@ -217,23 +206,17 @@ const Dashboard = () => {
                     <p className="text-gray-500">{job.location}</p>
                     <p className="text-gray-500">Salary: {job.salary}</p>
                     <div className="flex space-x-4 mt-2">
-                      <Button
-                        onClick={() => handleEdit(job)}
-                        className="bg-yellow-600 text-white"
-                      >
+                      <Button onClick={() => handleEdit(job)} className="bg-yellow-600 text-white">
                         Edit
                       </Button>
-                      <Button
-                        onClick={() => handleDelete(job.id)}
-                        className="bg-red-600 text-white"
-                      >
+                      <Button onClick={() => handleDelete(job.id)} className="bg-red-600 text-white">
                         Delete
                       </Button>
-                      <Button
-                        onClick={() => handleViewApplicants(job.id)}
-                        className="bg-blue-600 text-white"
-                      >
+                      <Button onClick={() => handleViewApplicants(job.id)} className="bg-blue-600 text-white">
                         View Applicants
+                      </Button>
+                      <Button onClick={() => handleViewJobDetails(job.id)} className="bg-green-600 text-white">
+                        View Details
                       </Button>
                     </div>
                   </li>
