@@ -1,29 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-
+"use client"
 import { useState } from "react";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { toast } from "react-hot-toast";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react"; // Import NextAuth's signIn function
-import Footer from "@/components/custom/Footer";
-import Navbar from "@/components/custom/Navbar";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { toast } from "react-hot-toast"; // Ensure to install react-toastify
+import { Button } from "@/components/ui/button";
+import {Input } from "@/components/ui/input" 
+import { Label } from "@/components/ui/label";
+import Navbar from "@/components/custom/Navbar"; // Adjust import based on your component structure
+import Footer from "@/components/custom/Footer"; // Adjust import based on your component structure
+import Link from "next/link";
 import React from "react";
 
-// Define the validation schema with Zod
+// Define schema for login validation using Zod
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"), // Email must be valid
-  password: z.string().min(6, "Password must be at least 6 characters long"), // Password validation
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-// Infer the TypeScript type from Zod schema
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
@@ -43,22 +40,34 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     const { email, password } = data;
 
-    // Using NextAuth's signIn function to authenticate the user
     const result = await signIn("credentials", {
-      redirect: false, // Prevent automatic redirect
+      redirect: false,
       email,
       password,
     });
 
     if (result?.error) {
       toast.error("Failed to log in. Please try again.");
-    }
-    else if (result?.status === 400) {
+    } else if (result?.status === 400) {
       toast.error("Invalid credentials. Please try again.");
-    }
-     else if (result?.ok) {
+    } else if (result?.ok) {
       toast.success("Logged in successfully!");
-      router.push("/");
+
+      // Redirect based on user role
+      const session = await getSession();
+      const role = session?.user?.role; // Ensure the role is available in the session
+
+      switch (role) {
+        case "jobseeker":
+          router.push("/"); // Redirect to home for jobseekers
+          break;
+        case "employer":
+          router.push("/dashboard"); // Redirect to dashboard for employers
+          break;
+        default:
+          router.push("/"); // Fallback redirect
+          break;
+      }
     }
   };
 
@@ -68,7 +77,7 @@ const Login = () => {
       <div className="bg-[#FAFAFA] px-10 py-24">
         <div className="bg-white w-full max-w-[400px] border border-gray-300 m-auto px-6 py-12">
           <h1 className="text-xl text-center mb-7 text-gray-600">
-            Sign In to Career Connects
+            Sign In to Career Connect
           </h1>
 
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -82,7 +91,7 @@ const Login = () => {
                 id="email"
                 placeholder="me@example.com"
                 className="w-full mt-3"
-                {...register("email")} // Registering email input field
+                {...register("email")}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">
@@ -98,10 +107,10 @@ const Login = () => {
               </Label>
               <div className="flex items-center border border-gray-300 mt-3 rounded-md px-2 py-3 gap-2">
                 <Input
-                  type={showPassword ? "text" : "password"} // Toggling password visibility
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   className="w-full h-[1.2rem] bg-transparent rounded-none border-none focus:ring-0 focus:outline-none"
-                  {...register("password")} // Registering password input field
+                  {...register("password")}
                 />
                 {showPassword ? (
                   <AiFillEyeInvisible

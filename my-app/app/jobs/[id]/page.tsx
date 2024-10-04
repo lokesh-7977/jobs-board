@@ -42,7 +42,7 @@ const JobDetails = () => {
 
             <button
               className="bg-blue-700  text-white py-2 px-4 w-20 rounded hover:bg-blue-900 transition duration-200"
-              onClick={() => alert('Application submitted!')} // Replace with actual application submission logic
+              onClick={() => alert('Application submitted!')} 
             >
               Apply
             </button>

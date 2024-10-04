@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/custom/Navbar";
 import Footer from "@/components/custom/Footer";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import React from "react";
@@ -36,30 +37,29 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 const Jobseeker = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] =
-    useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupFormData>({
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
+  const router = useRouter();
 
   const onSubmit = async (data: SignupFormData) => {
     const { passwordConfirmation, ...signupData } = data;
     const signupPayload = {
       ...signupData,
-      role: "jobSeeker"
+      role: "jobSeeker",
     };
-    
+
     try {
       const response = await axios.post("/api/auth/register", signupPayload);
       toast.success("Account created successfully!");
-      window.location.href = "/jobs";
+      router.push("/login");
     } catch (error) {
-      toast.error("Failed to create account");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.error || "Failed to create account");
+      } else {
+        toast.error("Failed to create account");
+      }
     }
   };
 
@@ -79,16 +79,10 @@ const Jobseeker = () => {
                   type="text"
                   {...register("name")}
                   placeholder="Name"
-                  className={`outline-0 w-full text-sm h-10 ${
-                    errors.name ? "border-red-500" : ""
-                  }`}
+                  className={`outline-0 w-full text-sm h-10 ${errors.name ? "border-red-500" : ""}`}
                 />
               </Label>
-              {errors.name && (
-                <p className="text-red-500 text-center text-sm">
-                  {errors.name.message}
-                </p>
-              )}
+              {errors.name && <p className="text-red-500 text-center text-sm">{errors.name.message}</p>}
             </div>
 
             <div className="mb-7">
@@ -99,16 +93,10 @@ const Jobseeker = () => {
                   type="email"
                   {...register("email")}
                   placeholder="Email address"
-                  className={`outline-0 w-full text-sm h-10 ${
-                    errors.email ? "border-red-500" : ""
-                  }`}
+                  className={`outline-0 w-full text-sm h-10 ${errors.email ? "border-red-500" : ""}`}
                 />
               </Label>
-              {errors.email && (
-                <p className="text-red-500 text-center text-sm">
-                  {errors.email.message}
-                </p>
-              )}
+              {errors.email && <p className="text-red-500 text-center text-sm">{errors.email.message}</p>}
             </div>
 
             <div className="mb-7">
@@ -120,35 +108,20 @@ const Jobseeker = () => {
                     type={showPassword ? "text" : "password"}
                     {...register("password")}
                     placeholder="Password"
-                    className={`outline-0 border-none w-full text-sm h-10 pr-3 ${
-                      errors.password ? "border-red-500 justify-center" : ""
-                    }`}
+                    className={`outline-0 border-none w-full text-sm h-10 pr-3 ${errors.password ? "border-red-500 justify-center" : ""}`}
                   />
                   {showPassword ? (
-                    <AiFillEyeInvisible
-                      onClick={() => setShowPassword(false)}
-                      className="cursor-pointer text-gray-500 mr-3 text-lg"
-                    />
+                    <AiFillEyeInvisible onClick={() => setShowPassword(false)} className="cursor-pointer text-gray-500 mr-3 text-lg" />
                   ) : (
-                    <AiFillEye
-                      onClick={() => setShowPassword(true)}
-                      className="cursor-pointer text-gray-500 mr-3 text-lg"
-                    />
+                    <AiFillEye onClick={() => setShowPassword(true)} className="cursor-pointer text-gray-500 mr-3 text-lg" />
                   )}
                 </div>
               </Label>
-              {errors.password && (
-                <p className="text-red-500 text-center text-sm">
-                  {errors.password.message}
-                </p>
-              )}
+              {errors.password && <p className="text-red-500 text-center text-sm">{errors.password.message}</p>}
             </div>
 
             <div className="mb-7">
-              <Label
-                htmlFor="passwordConfirmation"
-                className="flex items-center gap-3"
-              >
+              <Label htmlFor="passwordConfirmation" className="flex items-center gap-3">
                 <BiLock className="text-lg text-gray-500" />
                 <div className="flex flex-row border-gray-200 rounded-lg border-2 w-full gap-6 justify-center items-center">
                   <Input
@@ -156,42 +129,26 @@ const Jobseeker = () => {
                     type={showPasswordConfirmation ? "text" : "password"}
                     {...register("passwordConfirmation")}
                     placeholder="Password confirmation"
-                    className={`outline-0 w-full border-none bg-none text-sm h-10 pr-3 ${
-                      errors.passwordConfirmation ? "border-red-500 " : ""
-                    }`}
+                    className={`outline-0 w-full border-none bg-none text-sm h-10 pr-3 ${errors.passwordConfirmation ? "border-red-500 " : ""}`}
                   />
                   {showPasswordConfirmation ? (
-                    <AiFillEyeInvisible
-                      onClick={() => setShowPasswordConfirmation(false)}
-                      className="cursor-pointer text-gray-500 mr-3 text-lg"
-                    />
+                    <AiFillEyeInvisible onClick={() => setShowPasswordConfirmation(false)} className="cursor-pointer text-gray-500 mr-3 text-lg" />
                   ) : (
-                    <AiFillEye
-                      onClick={() => setShowPasswordConfirmation(true)}
-                      className="cursor-pointer text-gray-500 mr-3 text-lg"
-                    />
+                    <AiFillEye onClick={() => setShowPasswordConfirmation(true)} className="cursor-pointer text-gray-500 mr-3 text-lg" />
                   )}
                 </div>
               </Label>
-              {errors.passwordConfirmation && (
-                <p className="text-red-500 text-center text-sm">
-                  {errors.passwordConfirmation.message}
-                </p>
-              )}
+              {errors.passwordConfirmation && <p className="text-red-500 text-center text-sm">{errors.passwordConfirmation.message}</p>}
             </div>
 
-            <Button
-              type="submit"
-              className="bg-[#504ED7] hover:bg-[#2825C2] cursor-pointer transition-[background] text-sm w-full py-3 text-white rounded-sm mt-7"
-            >
+            <Button type="submit" className="bg-[#504ED7] hover:bg-[#2825C2] cursor-pointer transition-[background] text-sm w-full py-3 text-white rounded-sm mt-7">
               Sign Up
             </Button>
           </form>
           <p className="mt-8 text-gray-400 text-sm text-center">
             Already have an account?
             <Link className="outline-0 text-blue-500" href={"/login"}>
-              {" "}
-              Sign in
+              {" "}Sign in
             </Link>
           </p>
         </div>

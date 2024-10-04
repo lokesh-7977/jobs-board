@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-no-undef */
 import React from 'react';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+
 interface JobCardProps {
   id: number;
   logo: string;
@@ -10,14 +11,14 @@ interface JobCardProps {
   city: string;
   title: string;
   type: string;
-  description: string;
+  description: string; // Unused, consider using it or removing
   salary: number;
   salaryType: 'month' | 'year';
-  level: string;
+  level: string; // Unused, consider using it or removing
 }
 
 const JobCard: React.FC<JobCardProps> = ({
-    id,
+  id,
   logo,
   organization,
   province,
@@ -27,16 +28,25 @@ const JobCard: React.FC<JobCardProps> = ({
   salary,
   salaryType,
 }) => {
-    const router = useRouter();
+  const router = useRouter();
 
   const handleCardClick = () => {
-    router.push(`/jobs/${id}`); // Navigate to the dynamic route
+    router.push(`/jobs/${id}`); 
   };
 
   return (
-    <div onClick={handleCardClick} className="bg-white shadow-md rounded-lg p-5 transition-transform hover:scale-105">
+    <div
+      onClick={handleCardClick}
+      className="bg-white shadow-md rounded-lg p-5 transition-transform hover:scale-105 cursor-pointer"
+    >
       <div className="flex items-center gap-4">
-        <Image src={logo} alt={organization} width={48} height={48} className="rounded-full" />
+        <Image
+          src={logo || "https://www.example.com/default-image.jpg"} // Ensure the URL starts with "http://" or "https://"
+          alt={`${organization} logo`} // Improved alt text for accessibility
+          width={50}
+          height={48}
+          className="rounded-full"
+        />
         <div className="flex flex-col">
           <h2 className="font-bold text-lg">{title}</h2>
           <p className="text-gray-600">{organization}</p>
@@ -52,7 +62,9 @@ const JobCard: React.FC<JobCardProps> = ({
       <p className="text-gray-500 mt-4">{`${city}, ${province}`}</p>
 
       <p className="text-blue-600 font-semibold mt-2">
-        {`Rs ${salary.toLocaleString('id-ID')} / ${salaryType === 'month' ? 'Month' : 'Year'}`}
+        {`Rs ${salary.toLocaleString('id-ID')} / ${
+          salaryType === 'month' ? 'Month' : 'Year'
+        }`}
       </p>
     </div>
   );

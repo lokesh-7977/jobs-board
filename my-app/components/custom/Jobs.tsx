@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import React, { useState, useEffect } from "react";
-import JobCard from "./Cards";
-import { data as jobData } from "../../app/data/index";
+import JobCard from "./Cards"; // Importing the JobCard component
 import Link from "next/link";
 import { useSession } from "next-auth/react"; // Importing useSession
 
@@ -20,8 +20,56 @@ interface IJobCardProps {
   salaryType: "month" | "year";
 }
 
+// Dummy job data
+const jobData: any[] = [
+  {
+    id: 1,
+    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+    name: "Tech Corp",
+    companyLocation: { province: "California", city: "San Francisco" },
+    position: "Software Engineer",
+    type: "Full-Time",
+    jobOverview: "Develop and maintain software applications.",
+    salary: "Rp 15,000,000 / month",
+    level: "Mid-Level",
+  },
+  {
+    id: 2,
+    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+    name: "Design Studio",
+    companyLocation: { province: "New York", city: "New York" },
+    position: "UI/UX Designer",
+    type: "Part-Time",
+    jobOverview: "Create user-friendly designs.",
+    salary: "Rp 8,000,000 / month",
+    level: "Junior",
+  },
+  {
+    id: 3,
+    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+    name: "Finance Inc",
+    companyLocation: { province: "Texas", city: "Austin" },
+    position: "Financial Analyst",
+    type: "Contract",
+    jobOverview: "Analyze financial data and provide insights.",
+    salary: "Rp 20,000,000 / year",
+    level: "Senior",
+  },
+  {
+    id: 4,
+    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+    name: "Marketing Solutions",
+    companyLocation: { province: "Florida", city: "Miami" },
+    position: "Marketing Manager",
+    type: "Full-Time",
+    jobOverview: "Manage marketing campaigns.",
+    salary: "Rp 25,000,000 / month",
+    level: "Lead",
+  },
+];
+
 const Jobs: React.FC = () => {
-  const { data: session } = useSession(); // Get user session
+  const { data: session } = useSession(); 
   const [jobs, setJobs] = useState<IJobCardProps[]>([]);
   const [hoveredJobId, setHoveredJobId] = useState<number | null>(null); // State to track hovered job ID
 
@@ -39,7 +87,7 @@ const Jobs: React.FC = () => {
 
       return {
         id: job.id,
-        logo: (job as any).companyLogo || "",
+        logo: job.companyLogo || "",
         organization: job.name,
         province: job.companyLocation.province,
         city: job.companyLocation.city,
@@ -56,8 +104,8 @@ const Jobs: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full ml-3 md:ml-0 ">
-      <div className="py-10 px-5 ">
+    <div className="flex flex-col justify-center items-center w-full ml-3 md:ml-0">
+      <div className="py-10 px-5">
         <div className="flex items-center justify-center w-full mb-10">
           <h1 className="text-5xl font-bold text-gray-800 mb-5">
             <span className="text-violet-600 mr-3">Latest</span>Jobs
@@ -91,7 +139,6 @@ const Jobs: React.FC = () => {
                     level={job.level}
                   />
                 </Link>
-                {/* Show lock if the user is not logged in */}
                 {!session && hoveredJobId === job.id && (
                   <div className="absolute inset-0 flex justify-center items-center bg-gray-700 bg-opacity-75 text-white rounded-md">
                     <span>🔒 Locked - Please log in to view details</span>
@@ -102,11 +149,13 @@ const Jobs: React.FC = () => {
           </div>
         )}
       </div>
-      <Link href="/jobs">
-        <button className="border-2 border-blue-500 text-blue-500 rounded-full mb-10 px-6 py-2 transition-colors hover:bg-blue-100">
-          Find More Jobs
-        </button>
-      </Link>
+      {session && (
+        <Link href="/jobs">
+          <button className="border-2 border-blue-500 text-blue-500 rounded-full mb-10 px-6 py-2 transition-colors hover:bg-blue-100">
+            Find More Jobs
+          </button>
+        </Link>
+      )}
     </div>
   );
 };

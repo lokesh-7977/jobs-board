@@ -30,7 +30,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       email,
       password,
       role,
-      organizationName,
       industryType,
       totalEmployee,
       description,
@@ -66,10 +65,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let user;
 
     if (role === "employer") {
-      if (!organizationName || !industryType) {
-        return NextResponse.json({ error: "Missing organization details for employer" }, { status: 400 });
-      }
-
       user = await prisma.user.create({
         data: {
           name,
@@ -85,7 +80,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           province,
           city,
           district,
-          postalCode,
+          postalCode: String(postalCode),
           createdOrg
         },
       });
