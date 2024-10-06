@@ -34,88 +34,53 @@ interface IJobCardProps {
   salaryType: "month" | "year";
 }
 
-// Dummy job data
-const jobData: IJobData[] = [
-  {
-    id: 1,
-    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-    name: "Tech Corp",
-    companyLocation: { province: "California", city: "San Francisco" },
-    position: "Software Engineer",
-    type: "Full-Time",
-    jobOverview: "Develop and maintain software applications.",
-    salary: "Rp 15,000,000 / month",
-    level: "Mid-Level",
-  },
-  {
-    id: 1,
-    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-    name: "Tech Corp",
-    companyLocation: { province: "California", city: "San Francisco" },
-    position: "Software Engineer",
-    type: "Full-Time",
-    jobOverview: "Develop and maintain software applications.",
-    salary: "Rp 15,000,000 / month",
-    level: "Mid-Level",
-  },
-  {
-    id: 1,
-    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-    name: "Tech Corp",
-    companyLocation: { province: "California", city: "San Francisco" },
-    position: "Software Engineer",
-    type: "Full-Time",
-    jobOverview: "Develop and maintain software applications.",
-    salary: "Rp 15,000,000 / month",
-    level: "Mid-Level",
-  },
-  {
-    id: 1,
-    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-    name: "Tech Corp",
-    companyLocation: { province: "California", city: "San Francisco" },
-    position: "Software Engineer",
-    type: "Full-Time",
-    jobOverview: "Develop and maintain software applications.",
-    salary: "Rp 15,000,000 / month",
-    level: "Mid-Level",
-  },
-  // ... (other job data)
-];
-
 const Jobs: React.FC = () => {
   const { data: session } = useSession(); 
   const [jobs, setJobs] = useState<IJobCardProps[]>([]);
   const [hoveredJobId, setHoveredJobId] = useState<number | null>(null);
 
   useEffect(() => {
-    const transformedJobs: IJobCardProps[] = jobData.map((job) => {
-      const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
-      let salaryNumber = 0;
-      let salaryType: "month" | "year" = "month";
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch("/api/jobs");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const jobData: IJobData[] = await response.json();
 
-      if (salaryMatch) {
-        const salaryStr = salaryMatch[1].replace(/\./g, "").replace(/,/g, "");
-        salaryNumber = parseInt(salaryStr, 10);
-        salaryType = salaryMatch[2].toLowerCase() === "year" ? "year" : "month";
+        const transformedJobs: IJobCardProps[] = jobData.map((job) => {
+          const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
+          let salaryNumber = 0;
+          let salaryType: "month" | "year" = "month";
+
+          if (salaryMatch) {
+            const salaryStr = salaryMatch[1].replace(/\./g, "").replace(/,/g, "");
+            salaryNumber = parseInt(salaryStr, 10);
+            salaryType = salaryMatch[2].toLowerCase() === "year" ? "year" : "month";
+          }
+
+          return {
+            id: job.id,
+            logo: job.companyLogo || "https://dummyimage.com/100x100/000/fff", // Fallback logo if missing
+            organization: job.name,
+            province: job.companyLocation.province,
+            city: job.companyLocation.city,
+            title: job.position,
+            type: job.type,
+            description: job.jobOverview,
+            salary: salaryNumber,
+            salaryType: salaryType,
+            level: job.level || "",
+          };
+        });
+
+        setJobs(transformedJobs);
+      } catch (error) {
+        console.error("Error fetching job data:", error);
       }
+    };
 
-      return {
-        id: job.id,
-        logo: job.companyLogo || "",
-        organization: job.name,
-        province: job.companyLocation.province,
-        city: job.companyLocation.city,
-        title: job.position,
-        type: job.type,
-        description: job.jobOverview,
-        salary: salaryNumber,
-        salaryType: salaryType,
-        level: job.level || "",
-      };
-    });
-
-    setJobs(transformedJobs);
+    fetchJobs();
   }, []);
 
   return (
