@@ -19,12 +19,22 @@ enum Role {
   admin
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
 model User {
   id                String    @id @default(cuid()) @map("_id")
   email             String    @unique
+  verifyEmail       Boolean   @default(false)
   verifyTokenExpiry DateTime?
   verifyToken       String?
   name              String
+  dob               DateTime?
+  gender            Gender?
+  phone             String?
   password          String
   image             String?   @default("https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png")
   province          String?
@@ -33,14 +43,30 @@ model User {
   postalCode        String?
   createdOrg        String?
   address           String?
+  ssc               String?
+  inter             String?
+  degree            String?
   industryType      String?
   totalEmployee     Int?      @default(0)
   description       String?
+  experience        Int?
   role              Role      @default(jobSeeker)
 
   jobs          Jobs[]            @relation("UserJobs")
+  userJobs      UserJobs[]
   applications  JobApplications[]
-  JobApplicants JobApplicants[]
+  jobApplicants JobApplicants[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model UserJobs {
+  id     String @id @default(cuid()) @map("_id")
+  userId String
+  jobId  String
+
+  user User @relation(fields: [userId], references: [id])
+  job  Jobs @relation(fields: [jobId], references: [id])
 }
 
 model Jobs {
@@ -51,16 +77,14 @@ model Jobs {
   salary         Int?
   employmentType String
   jobLevel       String
-  skills         String[]
-  requirements   String
-  keywords       String[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   userId         String
 
   user          User              @relation("UserJobs", fields: [userId], references: [id])
+  userJobs      UserJobs[]
   applications  JobApplications[]
-  JobApplicants JobApplicants[]
+  jobApplicants JobApplicants[]
 }
 
 model JobApplications {

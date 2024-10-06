@@ -17,7 +17,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import React from "react";
 import Image from "next/image"; 
-import QR from "./../../../dummy_qr_code.png";
+import QR from "./../../logo.jpg";
 
 const signupSchema = z
   .object({
@@ -153,7 +153,6 @@ const Jobseeker = () => {
               {errors.passwordConfirmation && <p className="text-red-500 text-center text-sm">{errors.passwordConfirmation.message}</p>}
             </div>
 
-            {/* Show QR code and UTR input only after password confirmation */}
               <>
                 <div className="flex justify-center mb-7">
                   <Image

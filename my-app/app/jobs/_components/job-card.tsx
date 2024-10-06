@@ -1,20 +1,20 @@
 /* eslint-disable react/jsx-no-undef */
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; 
 import Image from 'next/image';
 
 interface JobCardProps {
-  id: number;
+  id: string; // Change to string to match your job data
   logo: string;
   organization: string;
   province: string;
   city: string;
   title: string;
   type: string;
-  description: string; // Unused, consider using it or removing
+  description: string; // Consider using this for displaying job details
   salary: number;
   salaryType: 'month' | 'year';
-  level: string; // Unused, consider using it or removing
+  level: string; // Consider using this for displaying job level
 }
 
 const JobCard: React.FC<JobCardProps> = ({

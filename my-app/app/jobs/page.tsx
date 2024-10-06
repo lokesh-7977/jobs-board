@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { AiOutlineSearch } from "react-icons/ai";
-import Footer from "../../components/custom/Footer";
-import Navbar from "../../components/custom/Navbar";
-import JobCard from "./_components/job-card";
-import { useSession } from "next-auth/react";
+import JobCard from "./_components/job-card"; // Ensure correct import of JobCard component
+import Link from "next/link";
+import { useSession } from "next-auth/react"; // Importing useSession
 
 interface IJobCardProps {
-  id: number;
+  id: string; // Changed to string to match your job data
   logo: string;
   organization: string;
   province: string;
@@ -18,137 +16,71 @@ interface IJobCardProps {
   type: string;
   description: string;
   salary: number;
+  salaryType: "month" | "year";
   level: string;
-  salaryType: 'month' | 'year';
 }
 
-const jobData = [
-  {
-    id: 1,
-    name: "Tech Corp",
-    companyLocation: {
-      province: "California",
-      city: "San Francisco"
-    },
-    position: "Software Engineer",
-    type: "Full-Time",
-    jobOverview: "Develop and maintain software applications.",
-    salary: "Rp 15,000,000 / month",
-    level: "Mid-Level",
-    logo : "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
-  },
-  {
-    id: 2,
-    name: "Design Studio",
-    companyLocation: {
-      province: "New York",
-      city: "New York"
-    },
-    position: "UI/UX Designer",
-    type: "Part-Time",
-    jobOverview: "Create user-friendly designs.",
-    salary: "Rp 8,000,000 / month",
-    level: "Junior",
-    logo : "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
-  },
-  {
-    id: 3,
-    name: "Finance Inc",
-    companyLocation: {
-      province: "Texas",
-      city: "Austin"
-    },
-    position: "Financial Analyst",
-    type: "Contract",
-    jobOverview: "Analyze financial data and provide insights.",
-    salary: "Rp 20,000,000 / year",
-    level: "Senior",
-    logo : "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
-  },
-  {
-    id: 4,
-    name: "Marketing Solutions",
-    companyLocation: {
-      province: "Florida",
-      city: "Miami"
-    },
-    position: "Marketing Manager",
-    type: "Full-Time",
-    jobOverview: "Manage marketing campaigns.",
-    salary: "Rp 25,000,000 / month",
-    level: "Lead",
-    logo : "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
-  },
-];
-
 const Jobs: React.FC = () => {
-  const { data: session } = useSession(); // Get the current session
-  const [search, setSearch] = useState<string>("");
+  const { data: session } = useSession();
   const [jobs, setJobs] = useState<IJobCardProps[]>([]);
+  const [hoveredJobId, setHoveredJobId] = useState<string | null>(null); // Changed to string
 
   useEffect(() => {
-    const transformedJobs: IJobCardProps[] = jobData.map((job) => {
-      const salaryMatch = job.salary.match(/Rp\s([\d.,]+)\s\/\s(\w+)/);
-      let salaryNumber = 0;
-      let salaryType: 'month' | 'year' = 'month';
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch('/api/jobs');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const jobData = await response.json(); // Assuming the response is in JSON format
+        const transformedJobs: IJobCardProps[] = jobData.map((job: any) => {
+          return {
+            id: job.id, // Ensure you're using the correct property name
+            logo: job.logo || "", // Ensure this matches your data structure
+            organization: job.userId, // Update based on your API response
+            province: job.location || "", // Update based on your API response
+            city: job.location || "", // Update based on your API response
+            title: job.title,
+            type: job.employmentType || "Full-time", // Provide a default type
+            description: job.description,
+            salary: job.salary || 0, // Fallback to 0 if salary is not present
+            salaryType: "month", // Adjust as per your salary data
+            level: job.jobLevel || "Entry-level", // Default level if not provided
+          };
+        });
 
-      if (salaryMatch) {
-        const salaryStr = salaryMatch[1].replace(/\./g, '').replace(/,/g, '');
-        salaryNumber = parseInt(salaryStr, 10);
-        salaryType = salaryMatch[2].toLowerCase() === 'year' ? 'year' : 'month';
+        setJobs(transformedJobs);
+      } catch (error) {
+        console.error('Failed to fetch jobs:', error);
       }
+    };
 
-      return {
-        id: job.id,
-        logo: job.logo,
-        organization: job.name,
-        province: job.companyLocation.province,
-        city: job.companyLocation.city,
-        title: job.position,
-        type: job.type,
-        description: job.jobOverview,
-        salary: salaryNumber,
-        salaryType: salaryType,
-        level: job.level || '',
-      };
-    });
-
-    setJobs(transformedJobs);
+    fetchJobs();
   }, []);
 
   return (
-    <>
-      <Navbar />
-      {session ? (
-        <div className="py-10 px-5">
-          <div className="w-full m-auto bg-white shadow-xl border border-gray-200 rounded-full h-16 py-0 px-4 flex items-center mb-5">
-            <form className="flex justify-between items-center w-full gap-3">
-              <div className="flex w-full items-center gap-3">
-                <AiOutlineSearch className="text-xl text-gray-500" />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Job title or keyword"
-                  className="outline-none h-full px-2 w-full text-sm rounded-lg border border-gray-300 focus:border-blue-500"
-                />
-              </div>
-              <button className="bg-[#504ED7] hover:bg-[#2825C2] text-white text-sm px-6 py-2 rounded-full transition duration-300">
-                Search
-              </button>
-            </form>
+    <div className="flex flex-col justify-center items-center w-full ml-3 md:ml-0">
+      <div className="py-10 px-5">
+        <div className="flex items-center justify-center w-full mb-10">
+          <h1 className="text-5xl font-bold text-gray-800 mb-5">
+            <span className="text-violet-600 mr-3">Latest</span>Jobs
+          </h1>
+        </div>
+        {jobs.length === 0 ? (
+          <div className="bg-red-500 text-center text-white rounded-md py-3">
+            There&apos;s no job available.
           </div>
-
-          <div className="bg-gray-100 py-10 px-5">
-            {jobs.length === 0 ? (
-              <div className="bg-red-500 text-center text-white rounded-md py-3">
-                There are no jobs available.
-              </div>
-            ) : (
-              <div className="grid gap-8 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-                {jobs.map((job) => (
+        ) : (
+          <div className="grid gap-8 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+            {jobs.map((job) => (
+              <div
+                key={job.id}
+                className="relative"
+                onMouseEnter={() => setHoveredJobId(job.id)}
+                onMouseLeave={() => setHoveredJobId(null)}
+              >
+                <Link href={`/jobs/${job.id}`} passHref>
                   <JobCard
-                    key={job.id}
                     id={job.id}
                     logo={job.logo}
                     organization={job.organization}
@@ -161,18 +93,25 @@ const Jobs: React.FC = () => {
                     salaryType={job.salaryType}
                     level={job.level}
                   />
-                ))}
+                </Link>
+                {!session && hoveredJobId === job.id && (
+                  <div className="absolute inset-0 flex justify-center items-center bg-gray-700 bg-opacity-75 text-white rounded-md">
+                    <span>🔒 Locked - Please log in to view details</span>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        </div>
-      ) : (
-        <div className="py-10 text-center">
-          <h2 className="text-xl font-bold">Please log in to view job listings.</h2>
-        </div>
+        )}
+      </div>
+      {session && (
+        <Link href="/jobs">
+          <button className="border-2 border-blue-500 text-blue-500 rounded-full mb-10 px-6 py-2 transition-colors hover:bg-blue-100">
+            Find More Jobs
+          </button>
+        </Link>
       )}
-      <Footer />
-    </>
+    </div>
   );
 };
 

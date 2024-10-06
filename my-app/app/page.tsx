@@ -1,4 +1,5 @@
 "use client"
+import CategoryContainer from "@/components/custom/Category";
 import Footer from "@/components/custom/Footer";
 import Hero from "@/components/custom/Hero";
 import Jobs from "@/components/custom/Jobs";
@@ -12,6 +13,7 @@ export default function Home() {
       <Toaster position="top-center" />
       <Navbar />
       <Hero />
+      <CategoryContainer />
       <Jobs />
       <Footer />
     </>
