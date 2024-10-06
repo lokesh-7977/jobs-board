@@ -16,37 +16,6 @@ export async function GET() {
     }
 }
 
-export async function GET_BY_USER(req: NextRequest) {
-    try {
-        const url = new URL(req.url);
-        const userId = url.searchParams.get('userId');
-
-        if (!userId || typeof userId !== 'string' || userId.trim().length === 0) {
-            return NextResponse.json({ error: 'Invalid or missing User ID' }, { status: 400 });
-        }
-
-
-        const jobs = await prisma.jobs.findMany({
-            where: {
-                userId: userId,
-            },
-        });
-
-        if (jobs.length === 0) {
-            return NextResponse.json({ error: `No jobs found for user ID: ${userId}` }, { status: 404 });
-        }
-        if(userId){
-            return NextResponse.json(jobs);
-        }
-    } catch (error) {
-        console.error("Error fetching jobs:", error);
-        return NextResponse.json({ error: "Failed to fetch jobs" }, { status: 500 });
-    } finally {
-        await prisma.$disconnect();
-    }
-}
-
-
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
