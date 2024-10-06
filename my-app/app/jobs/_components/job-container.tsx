@@ -15,7 +15,7 @@ const JobContainer: React.FC<IProps> = ({ jobs }) => {
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-10">
         {jobs.map((item) => (
           <JobCard
-            id={Number(item._id)} // Ensure that _id is always convertible to a number
+            id={String(item._id)} // Ensure that _id is always convertible to a string
             key={item._id}
             logo={item.organization?.user.avatar || ""} // Handle potential undefined value
             organization={item.organization?.user.name || "Unknown Organization"} // Provide a fallback
