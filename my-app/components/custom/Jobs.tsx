@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import JobCard from "./Cards"; 
+import JobCard from "./Cards";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { FaLock } from "react-icons/fa"; // Import a lock icon from react-icons
 
 const Jobs: React.FC = () => {
   interface Job {
@@ -12,11 +14,13 @@ const Jobs: React.FC = () => {
     location: string;
     salary: number;
     employmentType: string;
-    image: string | null; 
+    image: string | null;
     jobLevel: string;
   }
 
-  const [jobs, setJobs] = useState<Job[]>([]); 
+  const { data: session } = useSession(); // Check for session (user login)
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [hoveredJobId, setHoveredJobId] = useState<string | null>(null); // Track hovered job
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -50,18 +54,33 @@ const Jobs: React.FC = () => {
         ) : (
           <div className="grid gap-8 xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1">
             {jobs.map((job) => (
-              <Link key={job.id} href={`/jobs/${job.id}`} passHref>
-                <JobCard
-                  id={job.id}
-                  title={job.title}
-                  description={job.description}
-                  location={job.location}
-                  salary={job.salary}
-                  employmentType={job.employmentType}
-                  image={job.image || null}
-                  jobLevel={job.jobLevel}
-                />
-              </Link>
+              <div
+                key={job.id}
+                className="relative group transition-all duration-200"
+                onMouseEnter={() => setHoveredJobId(job.id)}
+                onMouseLeave={() => setHoveredJobId(null)}
+              >
+                <Link href={`/jobs/${job.id}`} passHref>
+                  <JobCard
+                    id={job.id}
+                    title={job.title}
+                    description={job.description}
+                    location={job.location}
+                    salary={job.salary}
+                    employmentType={job.employmentType}
+                    image={job.image || null}
+                    jobLevel={job.jobLevel}
+                  />
+                </Link>
+
+                {/* Lock overlay with improved design */}
+                {!session && hoveredJobId === job.id && (
+                  <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-75 text-white rounded-md transition-opacity duration-300 ease-in-out opacity-100">
+                    <FaLock className="text-4xl mb-2 animate-pulse" />
+                    <span className="text-lg font-semibold">Please log in to view</span>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
