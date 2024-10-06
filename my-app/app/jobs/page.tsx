@@ -2,12 +2,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import JobCard from "./_components/job-card"; // Ensure correct import of JobCard component
+import JobCard from "./_components/job-card";
 import Link from "next/link";
-import { useSession } from "next-auth/react"; // Importing useSession
+import { useSession } from "next-auth/react"; 
 
 interface IJobCardProps {
-  id: string; // Changed to string to match your job data
+  id: string;
   logo: string;
   organization: string;
   province: string;
@@ -23,7 +23,7 @@ interface IJobCardProps {
 const Jobs: React.FC = () => {
   const { data: session } = useSession();
   const [jobs, setJobs] = useState<IJobCardProps[]>([]);
-  const [hoveredJobId, setHoveredJobId] = useState<string | null>(null); // Changed to string
+  const [hoveredJobId, setHoveredJobId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -32,22 +32,20 @@ const Jobs: React.FC = () => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        const jobData = await response.json(); // Assuming the response is in JSON format
-        const transformedJobs: IJobCardProps[] = jobData.map((job: any) => {
-          return {
-            id: job.id, // Ensure you're using the correct property name
-            logo: job.logo || "", // Ensure this matches your data structure
-            organization: job.userId, // Update based on your API response
-            province: job.location || "", // Update based on your API response
-            city: job.location || "", // Update based on your API response
-            title: job.title,
-            type: job.employmentType || "Full-time", // Provide a default type
-            description: job.description,
-            salary: job.salary || 0, // Fallback to 0 if salary is not present
-            salaryType: "month", // Adjust as per your salary data
-            level: job.jobLevel || "Entry-level", // Default level if not provided
-          };
-        });
+        const jobData: any[] = await response.json(); 
+        const transformedJobs: IJobCardProps[] = jobData.map((job) => ({
+          id: job.id, 
+          logo: job.logo || "", 
+          organization: job.name || "Unknown Organization", 
+          province: job.location || "",
+          city: job.location || "", 
+          title: job.title,
+          type: job.employmentType || "Full-time", 
+          description: job.description,
+          salary: job.salary || 0, 
+          salaryType: "month", 
+          level: job.jobLevel || "Entry-level", 
+        }));
 
         setJobs(transformedJobs);
       } catch (error) {
@@ -63,7 +61,7 @@ const Jobs: React.FC = () => {
       <div className="py-10 px-5">
         <div className="flex items-center justify-center w-full mb-10">
           <h1 className="text-5xl font-bold text-gray-800 mb-5">
-            <span className="text-violet-600 mr-3">Latest</span>Jobs
+            <span className="text-violet-600 mr-3">Latest</span> Jobs
           </h1>
         </div>
         {jobs.length === 0 ? (

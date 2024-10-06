@@ -17,9 +17,7 @@ interface RequestBody {
   address?: string;
   province?: string;
   city?: string;
-  district?: string;
-  postalCode?: string;
-    createdOrg?: string;
+  createdOrg?: string;
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -34,30 +32,23 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       totalEmployee,
       description,
       address,
-      province,
       city,
-      district,
-      postalCode,
       createdOrg
     } = body;
 
-    // Common validation for required fields
     if (!name || !email || !password || !role) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Validate role
     if (role !== "jobSeeker" && role !== "employer") {
       return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
-    // Check if the email already exists
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json({ error: "Email already exists" }, { status: 400 });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
     const verifyToken = Math.random().toString(36).substring(2);
     const verifyTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
@@ -77,10 +68,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           totalEmployee,
           description,
           address,
-          province,
           city,
-          district,
-          postalCode: String(postalCode),
           createdOrg
         },
       });
@@ -97,10 +85,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           totalEmployee,
           description,
           address,
-          province,
           city,
-          district,
-          postalCode,
           createdOrg
         },
       });

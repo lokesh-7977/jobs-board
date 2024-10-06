@@ -1,229 +1,208 @@
-"use client"; 
-import { useState } from 'react';
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import { useForm } from 'react-hook-form';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+"use client";
 
-interface IFormInputs {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  createdDate: string;
-  totalEmployee: number;
-  industryType: string;
-  province: string;
-  city: string;
-  district: string;
-  postalCode: number;
-  address: string;
-  password: string;
-  passwordConfirmation?: string;
-  logo: string; 
-  role: string; 
-  description: string;
-}
+import { useState } from "react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
+// Zod schema for form validation
+const organizationSchema = z.object({
+  name: z.string().nonempty({ message: "Organization Name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  phoneNumber: z.string().nonempty({ message: "Phone Number is required" }),
+  totalEmployee: z
+    .string()
+    .min(1, { message: "Total employees must be at least 1" }),
+  industryType: z.string().nonempty({ message: "Industry Type is required" }),
+  city: z.string().nonempty({ message: "City is required" }),
+  address: z.string().nonempty({ message: "Address is required" }),
+  description: z.string().nonempty({ message: "Description is required" }),
+  logo: z.string().nonempty({ message: "Logo must be a valid URL" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
+});
+
+type OrganizationFormData = z.infer<typeof organizationSchema>;
 
 const Organization = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
-
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<IFormInputs>();
   const router = useRouter();
 
-  const onSubmit = async (data: IFormInputs) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<OrganizationFormData>({
+    resolver: zodResolver(organizationSchema),
+  });
+
+  const onSubmit = async (data: OrganizationFormData) => {
     const submittedData = {
       ...data,
-      createdDate: new Date().toISOString().split('T')[0], // Set created date on form submission
-      postalCode: Number(data.postalCode), 
+      createdDate: new Date().toISOString().split("T")[0],
       totalEmployee: Number(data.totalEmployee),
-      role: 'employer',
+      role: "employer",
     };
 
     try {
-      const response = await axios.post('/api/auth/register', submittedData);
+      const response = await axios.post("/api/auth/register", submittedData);
       if (response.status === 200 || response.status === 201) {
-        toast.success('Organization registered successfully!');
+        toast.success("Organization registered successfully!");
         reset();
-        router.push('/login');
+        router.push("/login");
       } else {
-        toast.error('Failed to register the organization.');
+        toast.error("Failed to register the organization.");
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        toast.error(`Error: ${error.response.data.error || 'An error occurred'}`);  
+        toast.error(
+          `Error: ${error.response.data.error || "An error occurred"}`
+        );
       } else {
-        toast.error('An unexpected error occurred.');
+        toast.error("An unexpected error occurred.");
       }
     }
   };
 
   return (
-    <div className="bg-[#FAFAFA] px-10 py-14">
-      <h1 className="text-center mb-10 text-2xl font-semibold text-[#504ED7]">Recruit Better With Carrers Connect</h1>
-      <div className="bg-white w-full max-w-[1000px] border border-gray-300 m-auto px-8 py-12">
+    <div className="bg-gray-50 px-8 py-12">
+      <h1 className="text-center text-3xl font-bold text-indigo-600 mb-8">
+        Recruit Better With Careers Connect
+      </h1>
+
+      <div className="bg-white shadow-md rounded-lg p-8 max-w-2xl mx-auto">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Form Fields */}
-          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
-            <div className="flex-1">
-              <Label htmlFor="name" className="text-sm">Organization Name</Label>
-              <Input
-                id="name"
-                {...register('name', { required: 'Organization Name is required' })}
-              />
-              {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="name">Organization Name</Label>
+              <Input id="name" {...register("name")} />
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name.message}</p>
+              )}
             </div>
-            <div className="flex-1">
-              <Label htmlFor="email" className="text-sm">Organization Email</Label>
-              <Input
-                type="email"
-                id="email"
-                {...register('email', { required: 'Email is required' })}
-              />
-              {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
-            </div>
-          </div>
 
-          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
-            <div className="flex-1">
-              <Label htmlFor="phoneNumber" className="text-sm">Phone Number</Label>
-              <Input
-                id="phoneNumber"
-                {...register('phoneNumber', { required: 'Phone Number is required' })}
-              />
-              {errors.phoneNumber && <p className="text-red-500 text-xs">{errors.phoneNumber.message}</p>}
+            <div>
+              <Label htmlFor="email">Organization Email</Label>
+              <Input id="email" type="email" {...register("email")} />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
             </div>
-            <div className="flex-1">
-              <Label htmlFor="totalEmployee" className="text-sm">Total Employees</Label>
+
+            <div>
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input id="phoneNumber" type="tel" {...register("phoneNumber")} />
+              {errors.phoneNumber && (
+                <p className="text-red-500 text-sm">
+                  {errors.phoneNumber.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="totalEmployee">Total Employees</Label>
               <Input
-                type="number"
                 id="totalEmployee"
-                {...register('totalEmployee', { required: 'Total Employees is required' })}
-              />
-              {errors.totalEmployee && <p className="text-red-500 text-xs">{errors.totalEmployee.message}</p>}
-            </div>
-          </div>
-
-          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
-            <div className="flex-1">
-              <Label htmlFor="industryType" className="text-sm">Industry Type</Label>
-              <Input
-                id="industryType"
-                {...register('industryType', { required: 'Industry Type is required' })}
-              />
-              {errors.industryType && <p className="text-red-500 text-xs">{errors.industryType.message}</p>}
-            </div>
-            <div className="flex-1">
-              <Label htmlFor="province" className="text-sm">Province</Label>
-              <Input
-                id="province"
-                {...register('province', { required: 'Province is required' })}
-              />
-              {errors.province && <p className="text-red-500 text-xs">{errors.province.message}</p>}
-            </div>
-          </div>
-
-          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
-            <div className="flex-1">
-              <Label htmlFor="city" className="text-sm">City</Label>
-              <Input
-                id="city"
-                {...register('city', { required: 'City is required' })}
-              />
-              {errors.city && <p className="text-red-500 text-xs">{errors.city.message}</p>}
-            </div>
-            <div className="flex-1">
-              <Label htmlFor="district" className="text-sm">District</Label>
-              <Input
-                id="district"
-                {...register('district', { required: 'District is required' })}
-              />
-              {errors.district && <p className="text-red-500 text-xs">{errors.district.message}</p>}
-            </div>
-          </div>
-
-          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
-            <div className="flex-1">
-              <Label htmlFor="postalCode" className="text-sm">Postal Code</Label>
-              <Input
                 type="number"
-                id="postalCode"
-                {...register('postalCode', { required: 'Postal Code is required' })}
+                {...register("totalEmployee")}
               />
-              {errors.postalCode && <p className="text-red-500 text-xs">{errors.postalCode.message}</p>}
+              {errors.totalEmployee && (
+                <p className="text-red-500 text-sm">
+                  {errors.totalEmployee.message}
+                </p>
+              )}
             </div>
-            <div className="flex-1">
-              <Label htmlFor="address" className="text-sm">Address</Label>
-              <Input
-                id="address"
-                {...register('address', { required: 'Address is required' })}
-              />
-              {errors.address && <p className="text-red-500 text-xs">{errors.address.message}</p>}
+
+            <div>
+              <Label htmlFor="industryType">Industry Type</Label>
+              <Input id="industryType" {...register("industryType")} />
+              {errors.industryType && (
+                <p className="text-red-500 text-sm">
+                  {errors.industryType.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="city">City</Label>
+              <Input id="city" {...register("city")} />
+              {errors.city && (
+                <p className="text-red-500 text-sm">{errors.city.message}</p>
+              )}
             </div>
           </div>
 
-          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
-            <div className="flex-1">
-              <Label htmlFor="description" className="text-sm">Description</Label>
-              <Input
-                id="description"
-                {...register('description', { required: 'Description is required' })}
-              />
-              {errors.description && <p className="text-red-500 text-xs">{errors.description.message}</p>}
-            </div>
-            <div className="flex-1">
-              <Label htmlFor="logo" className="text-sm">Logo URL</Label>
-              <Input
-                id="logo"
-                {...register('logo', { required: 'Logo URL is required' })}
-              />
-              {errors.logo && <p className="text-red-500 text-xs">{errors.logo.message}</p>}
-            </div>
+          <div className="mt-6">
+            <Label htmlFor="address">Address</Label>
+            <Input id="address" {...register("address")} />
+            {errors.address && (
+              <p className="text-red-500 text-sm">{errors.address.message}</p>
+            )}
           </div>
 
-          <div className="flex md:flex-row flex-col md:items-center gap-7 md:mb-10 mb-7">
-            <div className="flex-1">
-              <Label htmlFor="password" className="text-sm">Password</Label>
-              <div className="flex items-center border border-gray-300 mt-3 rounded-md px-2 py-3 gap-2">
+          <div className="mt-6 flex flex-col md:flex-row gap-4">
+            <div className="w-full">
+              <Label htmlFor="logo">Logo URL</Label>
+              <Input id="logo" {...register("logo")} />
+              {errors.logo && (
+                <p className="text-red-500 text-sm">{errors.logo.message}</p>
+              )}
+            </div>
+
+            <div className="w-full">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
                 <Input
-                  type={showPassword ? 'text' : 'password'}
                   id="password"
-                  {...register('password', { required: 'Password is required' })}
-                  className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-black focus:ring-0 focus:outline-none"
+                  type={showPassword ? "text" : "password"}
+                  {...register("password")}
                 />
-                {showPassword ? (
-                  <AiFillEyeInvisible onClick={() => setShowPassword(false)} className="text-gray-400 cursor-pointer" />
-                ) : (
-                  <AiFillEye onClick={() => setShowPassword(true)} className="text-gray-400 cursor-pointer" />
-                )}
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-2.5 text-gray-500 cursor-pointer"
+                >
+                  {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                </span>
               </div>
-              {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
-            <div className="flex-1">
-              <Label htmlFor="passwordConfirmation" className="text-sm">Confirm Password</Label>
-              <div className="flex items-center border border-gray-300 mt-3 rounded-md px-2 py-3 gap-2">
-                <Input
-                  type={showPasswordConfirmation ? 'text' : 'password'}
-                  id="passwordConfirmation"
-                  {...register('passwordConfirmation', { required: 'Confirm Password is required' })}
-                  className="w-full h-[1.2rem] bg-transparent rounded-none border-none text-black focus:ring-0 focus:outline-none"
-                />
-                {showPasswordConfirmation ? (
-                  <AiFillEyeInvisible onClick={() => setShowPasswordConfirmation(false)} className="text-gray-400 cursor-pointer" />
-                ) : (
-                  <AiFillEye onClick={() => setShowPasswordConfirmation(true)} className="text-gray-400 cursor-pointer" />
-                )}
-              </div>
-              {errors.passwordConfirmation && <p className="text-red-500 text-xs">{errors.passwordConfirmation.message}</p>}
-            </div>
+          </div>
+
+          <div className="mt-6">
+            <Label htmlFor="description">Description</Label>
+            <textarea
+              id="description"
+              {...register("description")}
+              className="w-full rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" // Changed border color and width
+              rows={4}
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm">
+                {errors.description.message}
+              </p>
+            )}
           </div>
 
           <div className="mt-8">
-            <Button type="submit" className="bg-[#504ED7] w-full text-white hover:bg-[#373E80]">Register Organization</Button>
+            <Button
+              type="submit"
+              className="bg-indigo-600 w-full text-white hover:bg-indigo-700"
+            >
+              Register Organization
+            </Button>
           </div>
         </form>
       </div>

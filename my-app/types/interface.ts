@@ -1,5 +1,10 @@
 // Define the structure of your job data
 export  interface IJobData {
+    title: any;
+    employmentType: any;
+    description: any;
+    jobLevel: any;
+    image: string;
     id: number;
     name: string;
     position: string;

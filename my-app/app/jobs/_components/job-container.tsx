@@ -15,18 +15,18 @@ const JobContainer: React.FC<IProps> = ({ jobs }) => {
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-10">
         {jobs.map((item) => (
           <JobCard
-            id={String(item._id)} // Ensure that _id is always convertible to a string
+            id={String(item._id)} 
             key={item._id}
-            logo={item.organization?.user.avatar || ""} // Handle potential undefined value
-            organization={item.organization?.user.name || "Unknown Organization"} // Provide a fallback
-            province={String(item.organization?.user.province) || "Unknown Province"} // Ensure province is a string
-            city={String(item.organization?.user.city) || "Unknown City"} // Ensure city is a string
+            logo={item.organization?.user.avatar || ""} 
+            organization={item.organization?.user.name || "Unknown Organization"} 
+            province={String(item.organization?.user.province) || "Unknown Province"} 
+            city={String(item.organization?.user.city) || "Unknown City"} 
             description={item.overview}
             title={item.position}
             salary={item.salary}
-            salaryType="month" // Change this based on your data if needed
+            salaryType="month" 
             type={item.employmentType}
-            level={""} // Update if you want to include the job level
+            level={""} 
           />
         ))}
       </div>

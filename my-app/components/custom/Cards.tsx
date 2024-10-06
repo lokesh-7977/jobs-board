@@ -3,30 +3,25 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface JobCardProps {
-  id: number;
-  logo: string;
-  organization: string;
-  province: string;
-  city: string;
+  id: string; // Use string type to match the API response
   title: string;
-  type: string;
   description: string;
+  location: string;
   salary: number;
-  salaryType: 'month' | 'year';
-  level: string;  
+  employmentType: string;
+  image: string | null;
+  jobLevel: string;
 }
 
 const JobCard: React.FC<JobCardProps> = ({
   id,
-  logo,
-  organization,
-  province,
-  city,
   title,
-  type,
+  description,
+  location,
   salary,
-  salaryType,
-  description
+  employmentType,
+  image : image,
+  jobLevel,
 }) => {
   const router = useRouter();
 
@@ -40,22 +35,28 @@ const JobCard: React.FC<JobCardProps> = ({
       className="cursor-pointer border-2 hover:border-blue-700 bg-white shadow-lg rounded-lg p-6 transition-transform hover:scale-105"
     >
       <div className="flex items-center gap-4 mb-4">
-        <Image src={logo} className="w-12 h-12 rounded-full object-cover" alt={''} width={48} height={48} />
+        <Image 
+          src={image || "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"} 
+          className="w-12 h-12 rounded-full object-cover" 
+          alt={title} 
+          width={48} 
+          height={48} 
+        />
         <div>
-          <p className="text-sm text-gray-600">{organization}</p>
-          <p className="text-xs text-gray-400">{`${city}, ${province}`}</p>
+          <p className="text-sm text-gray-600">{location}</p>
         </div>
       </div>
 
       <h2 className="font-bold text-lg text-gray-800 mb-2">{title}</h2>
 
-      <p className="text-sm text-gray-500 mb-4">{type}</p>
+      <p className="text-sm text-gray-500 mb-4">{employmentType}</p>
 
       <p className="text-xs text-gray-400 truncate mb-6">{description}</p>
 
       <p className="text-lg font-semibold text-black">
-        {`Rs ${salary.toLocaleString('id-ID')} / ${salaryType === 'month' ? 'month' : 'year'}`}
+        {`Rs ${salary.toLocaleString('id-ID')} / month`}
       </p>
+      <p className="text-xs text-gray-500">{jobLevel}</p>
     </div>
   );
 };

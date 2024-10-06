@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface JobCardProps {
-  id: string; // Change to string to match your job data
+  id: string; 
   logo: string;
   organization: string;
   province: string;
@@ -41,8 +41,8 @@ const JobCard: React.FC<JobCardProps> = ({
     >
       <div className="flex items-center gap-4">
         <Image
-          src={logo || "https://www.example.com/default-image.jpg"} // Ensure the URL starts with "http://" or "https://"
-          alt={`${organization} logo`} // Improved alt text for accessibility
+          src={logo || "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"} 
+          alt={`${organization} logo`} 
           width={50}
           height={48}
           className="rounded-full"

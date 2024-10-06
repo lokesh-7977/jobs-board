@@ -37,9 +37,7 @@ model User {
   phone             String?
   password          String
   image             String?   @default("https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png")
-  province          String?
   city              String?
-  district          String?
   postalCode        String?
   createdOrg        String?
   address           String?
@@ -75,12 +73,13 @@ model Jobs {
   description    String
   location       String
   salary         Int?
-  employmentType String
+  employmentType String 
+  image          String?
   jobLevel       String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   userId         String
-
+  
   user          User              @relation("UserJobs", fields: [userId], references: [id])
   userJobs      UserJobs[]
   applications  JobApplications[]

@@ -2,17 +2,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/../lib/prisma";
 
-
 export async function GET() {
     try {
         const jobs = await prisma.jobs.findMany();
         return NextResponse.json(jobs);
-
     } catch (error) {
         console.error("Error fetching jobs:", error);
         return NextResponse.json({ error: "Failed to fetch jobs" }, { status: 500 });
-    } finally {
-        await prisma.$disconnect();
     }
 }
 
@@ -25,10 +21,10 @@ export async function POST(req: NextRequest) {
             location, 
             salary, 
             employmentType, 
-            jobLevel, 
-            userId : userId
+            jobLevel,
+            image,            
+            userId 
         } = body;
-        console.log(body);
 
         const newJob = await prisma.jobs.create({
             data: {
@@ -38,6 +34,7 @@ export async function POST(req: NextRequest) {
                 salary,
                 employmentType,
                 jobLevel,
+                image,         
                 user: { 
                     connect: { id: userId }
                 }
@@ -51,7 +48,6 @@ export async function POST(req: NextRequest) {
     }
 }
 
-
 export async function PUT(req: NextRequest) {
     try {
         const url = new URL(req.url);
@@ -62,6 +58,7 @@ export async function PUT(req: NextRequest) {
             description,
             location,
             salary,
+            image,        
             employmentType,
             jobLevel         
         } = body;
@@ -79,14 +76,15 @@ export async function PUT(req: NextRequest) {
                 description,
                 location,
                 salary,
+                image,       
                 employmentType,
                 jobLevel,
             },
         });
 
         return NextResponse.json(updatedJob, { status: 200 });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+        console.error("Error updating job:", error);
         return NextResponse.json({ error: 'Error updating job' }, { status: 500 });
     }
 }
@@ -107,8 +105,8 @@ export async function DELETE(req: NextRequest) {
         });
 
         return NextResponse.json({ message: 'Job deleted successfully' }, { status: 200 });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+        console.error("Error deleting job:", error);
         return NextResponse.json({ error: 'Error deleting job' }, { status: 500 });
     }
 }
