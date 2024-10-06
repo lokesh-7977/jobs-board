@@ -69,7 +69,7 @@ const Navbar = () => {
           ) : (
             <>
              
-             <Link href="/">
+             <Link href="/job-seeker">
                 <p className={`px-4 py-2  rounded-lg  text-white hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/login" ? "bg-[#504ED7] text-white" : ""}`}>
                   Looking For Job
                 </p>
