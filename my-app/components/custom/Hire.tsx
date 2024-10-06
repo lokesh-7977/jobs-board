@@ -33,7 +33,7 @@ const steps = [
 const GetStartedSteps = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 text-center">
-      <h1 className="text-3xl font-bold mb-8 pb-2 border-b-2 border-orange-500 text-center">
+      <h1 className="text-3xl font-bold mb-8 pb-2">
         Get started in 3 easy steps
       </h1>
 
