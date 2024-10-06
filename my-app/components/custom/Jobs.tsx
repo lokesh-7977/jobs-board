@@ -1,10 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import JobCard from "./Cards"; // Importing the JobCard component
+import JobCard from "./Cards"; 
 import Link from "next/link";
-import { useSession } from "next-auth/react"; // Importing useSession
+import { useSession } from "next-auth/react"; 
+
+interface IJobData {
+  id: number;
+  companyLogo: string;
+  name: string;
+  companyLocation: {
+    province: string;
+    city: string;
+  };
+  position: string;
+  type: string;
+  jobOverview: string;
+  salary: string;
+  level: string;
+}
 
 interface IJobCardProps {
   id: number;
@@ -21,7 +35,7 @@ interface IJobCardProps {
 }
 
 // Dummy job data
-const jobData: any[] = [
+const jobData: IJobData[] = [
   {
     id: 1,
     companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
@@ -33,45 +47,13 @@ const jobData: any[] = [
     salary: "Rp 15,000,000 / month",
     level: "Mid-Level",
   },
-  {
-    id: 2,
-    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-    name: "Design Studio",
-    companyLocation: { province: "New York", city: "New York" },
-    position: "UI/UX Designer",
-    type: "Part-Time",
-    jobOverview: "Create user-friendly designs.",
-    salary: "Rp 8,000,000 / month",
-    level: "Junior",
-  },
-  {
-    id: 3,
-    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-    name: "Finance Inc",
-    companyLocation: { province: "Texas", city: "Austin" },
-    position: "Financial Analyst",
-    type: "Contract",
-    jobOverview: "Analyze financial data and provide insights.",
-    salary: "Rp 20,000,000 / year",
-    level: "Senior",
-  },
-  {
-    id: 4,
-    companyLogo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-    name: "Marketing Solutions",
-    companyLocation: { province: "Florida", city: "Miami" },
-    position: "Marketing Manager",
-    type: "Full-Time",
-    jobOverview: "Manage marketing campaigns.",
-    salary: "Rp 25,000,000 / month",
-    level: "Lead",
-  },
+  // ... (other job data)
 ];
 
 const Jobs: React.FC = () => {
   const { data: session } = useSession(); 
   const [jobs, setJobs] = useState<IJobCardProps[]>([]);
-  const [hoveredJobId, setHoveredJobId] = useState<number | null>(null); // State to track hovered job ID
+  const [hoveredJobId, setHoveredJobId] = useState<number | null>(null);
 
   useEffect(() => {
     const transformedJobs: IJobCardProps[] = jobData.map((job) => {
@@ -116,7 +98,7 @@ const Jobs: React.FC = () => {
             There&apos;s no job available.
           </div>
         ) : (
-          <div className="grid gap-8 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {jobs.map((job) => (
               <div
                 key={job.id}

@@ -71,7 +71,7 @@ const CategoryContainer = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-3xl font-bold text-center mb-6">One Place Many Solutions</h2>
+      <h2 className="text-3xl font-bold text-center mb-6">A single platform for your hiring needs</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {jobCategories.map((category) => (
           <div

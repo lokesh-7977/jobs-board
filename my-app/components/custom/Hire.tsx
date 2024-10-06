@@ -32,7 +32,7 @@ const steps = [
 
 const GetStartedSteps = () => {
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6 text-center">
       <h1 className="text-3xl font-bold mb-8 pb-2 border-b-2 border-orange-500 text-center">
         Get started in 3 easy steps
       </h1>
@@ -41,10 +41,7 @@ const GetStartedSteps = () => {
         {steps.map((step) => (
           <Card key={step.number} className="flex flex-col">
             <CardHeader className="flex-grow">
-              <div className="w-150 h-15 bg-indigo-600 text-white rounded-full flex items-center justify-center mb-4">
-                {step.number}
-              </div>
-              <CardTitle className="text-center">{step.title}</CardTitle>
+              <CardTitle>{step.title}</CardTitle>
             </CardHeader>
             <CardContent>
               <Image

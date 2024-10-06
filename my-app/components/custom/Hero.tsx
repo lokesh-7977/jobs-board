@@ -19,7 +19,7 @@ const Hero = () => {
 
   return (
     <div className="pb-20 pt-14 px-10 md:px-0 bg-gradient-to-r from-blue-100 to-white">
-      <h1 className="md:text-6xl text-4xl text-center font-bold text-gray-800 mb-7">
+      <h1 className="md:text-4xl text-4xl text-center font-bold text-gray-800 mb-4">
         Find Your Dream Job with Career Connects
       </h1>
 
@@ -36,7 +36,7 @@ const Hero = () => {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Job title or keyword"
               aria-label="Job title or keyword"
-              className="outline-none h-full pl-10 pr-4 w-full text-sm border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-300 placeholder-gray-400 transition-all duration-300 ease-in-out"
+              className="outline-none h-full pl-10 pr-4 w-full text-sm  rounded-md shadow-sm focus:ring-2 focus:ring-blue-300 placeholder-gray-400 transition-all duration-300 ease-in-out"
               onFocus={(e) => e.currentTarget.style.borderColor = '#504ED7'}
               onBlur={(e) => e.currentTarget.style.borderColor = '#D1D5DB'}
             />
