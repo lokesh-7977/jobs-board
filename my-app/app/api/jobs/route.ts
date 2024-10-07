@@ -1,6 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { prisma } from "@/app/../lib/prisma";
+
+
+const jobSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    description: z.string().min(1, "Description is required"),
+    location: z.string().min(1, "Location is required"),
+    salary: z.number().nullable().optional(),
+    employmentType: z.string().min(1, "Employment type is required"),
+    jobLevel: z.string().optional(),
+    image: z.string().optional(),
+    userId: z.string().min(1, "User ID is required"),
+  });
 
 export async function GET() {
     try {
@@ -12,41 +25,37 @@ export async function GET() {
     }
 }
 
-export async function POST(req: NextRequest) {
+  
+  export async function POST(req: NextRequest) {
     try {
-        const body = await req.json();
-        const { 
-            title, 
-            description, 
-            location, 
-            salary, 
-            employmentType, 
-            jobLevel,
-            image,            
-            userId 
-        } = body;
-
-        const newJob = await prisma.jobs.create({
-            data: {
-                title,
-                description,
-                location,
-                salary,
-                employmentType,
-                jobLevel,
-                image,         
-                user: { 
-                    connect: { id: userId }
-                }
-            },
-        });
-
-        return NextResponse.json(newJob, { status: 201 });
+      const body = await req.json();
+  
+      const parsedBody = jobSchema.parse(body);
+  
+      const newJob = await prisma.jobs.create({ 
+        data: {
+          title: parsedBody.title,
+          description: parsedBody.description,
+          location: parsedBody.location,
+          salary: parsedBody.salary,
+          employmentType: parsedBody.employmentType,
+          jobLevel: parsedBody.jobLevel ?? "",
+          image: parsedBody.image, 
+          user: {
+            connect: { id: parsedBody.userId }, 
+          },
+        },
+      });
+  
+      return NextResponse.json(newJob, { status: 201 }); 
     } catch (error) {
-        console.error("Error creating job:", error);
-        return NextResponse.json({ error: 'Error creating job' }, { status: 500 });
+      console.error("Error creating job:", error);
+      if (error instanceof z.ZodError) {
+        return NextResponse.json({ errors: error.errors }, { status: 400 }); 
+      }
+      return NextResponse.json({ error: 'Error creating job' }, { status: 500 }); 
     }
-}
+  }
 
 export async function PUT(req: NextRequest) {
     try {

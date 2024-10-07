@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn, getSession } from "next-auth/react";
@@ -8,10 +8,10 @@ import { z } from "zod";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { toast, Toaster } from "react-hot-toast"; 
 import { Button } from "@/components/ui/button";
-import {Input } from "@/components/ui/input" 
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Navbar from "@/components/custom/Navbar"; 
-import Footer from "@/components/custom/Footer"; 
+import Navbar from "@/components/custom/Navbar";
+import Footer from "@/components/custom/Footer";
 import Link from "next/link";
 import React from "react";
 
@@ -44,36 +44,37 @@ const Login = () => {
     });
 
     if (result?.status === 401) {
-      toast.error("Email Not registered.");
+      toast.error("Email not registered.");
     } else if (result?.status === 400) {
       toast.error("Invalid credentials. Please try again.");
     } else if (result?.ok) {
       toast.success("Logged in successfully!");
+      handleRedirect(); 
+    } else if (result?.status === 500) {
+      toast.error("Server error. Please try again later.");
     }
-    else if(result?.status === 500){
-        toast.error("Server Error")
-     
+  };
 
-      const session = await getSession();
-      const role = session?.user?.role; 
+  const handleRedirect = async () => {
+    const session = await getSession();
+    const role = session?.user?.role; 
 
-      switch (role) {
-        case "jobseeker":
-          router.push("/"); 
-          break;
-        case "employer":
-          router.push("/dashboard");
-          break;
-        default:
-          router.push("/");
-          break;
-      }
+    switch (role) {
+      case "jobseeker":
+        router.push("/"); 
+        break;
+      case "employer":
+        router.push("/dashboard");
+        break;
+      default:
+        router.push("/"); 
+        break;
     }
   };
 
   return (
     <>
-    <Toaster />
+      <Toaster />
       <Navbar />
       <div className="bg-[#FAFAFA] px-10 py-24">
         <div className="bg-white w-full max-w-[400px] border border-gray-300 m-auto px-6 py-12">
@@ -81,11 +82,10 @@ const Login = () => {
             Sign In to Career Connect
           </h1>
 
+          {/* Form starts here */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-7">
-              <Label htmlFor="email" className="text-sm">
-                Email
-              </Label>
+              <Label htmlFor="email" className="text-sm">Email</Label>
               <Input
                 type="email"
                 id="email"
@@ -101,9 +101,7 @@ const Login = () => {
             </div>
 
             <div className="mb-7">
-              <Label htmlFor="password" className="text-sm">
-                Password
-              </Label>
+              <Label htmlFor="password" className="text-sm">Password</Label>
               <div className="flex items-center border border-gray-300 mt-3 rounded-md px-2 py-3 gap-2">
                 <Input
                   type={showPassword ? "text" : "password"}
