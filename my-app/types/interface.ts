@@ -1,9 +1,8 @@
-// Define the structure of your job data
 export  interface IJobData {
-    title: any;
-    employmentType: any;
-    description: any;
-    jobLevel: any;
+    title: string;
+    employmentType: never;
+    description: string;
+    jobLevel: never;
     image: string;
     id: number;
     name: string;
@@ -15,7 +14,7 @@ export  interface IJobData {
       experience: string;
       skills: string[];
     };
-    salary: string; // e.g., "Rp 9.000.000 / month"
+    salary: string;
     companyOverview: {
       focus: string;
       goals: string;
@@ -29,7 +28,6 @@ export  interface IJobData {
     employeeCount: number;
   }
   
-  // Define the props expected by JobCard component
   export  interface IJobCardProps {
     id: number;
     logo: string;
@@ -43,7 +41,6 @@ export  interface IJobData {
     salaryType: 'month' | 'year';
   }
   
-  // Define the props expected by Jobs component
   export interface IJobsProps {
     data: IJobData[];
   }
