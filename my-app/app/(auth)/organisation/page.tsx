@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -55,6 +55,7 @@ const Organization = () => {
 
     try {
       const response = await axios.post("/api/auth/register", submittedData);
+      console.log(response); // Debugging log
       if (response.status === 200 || response.status === 201) {
         toast.success("Organization registered successfully!");
         reset();
@@ -63,6 +64,7 @@ const Organization = () => {
         toast.error("Failed to register the organization.");
       }
     } catch (error) {
+      console.error(error); // Log the error for debugging
       if (axios.isAxiosError(error) && error.response) {
         toast.error(
           `Error: ${error.response.data.error || "An error occurred"}`
@@ -74,6 +76,8 @@ const Organization = () => {
   };
 
   return (
+    <>
+    <Toaster />
     <div className="bg-gray-50 px-8 py-12">
       <h1 className="text-center text-3xl font-bold text-indigo-600 mb-8">
         Recruit Better With Careers Connect
@@ -186,7 +190,7 @@ const Organization = () => {
             <textarea
               id="description"
               {...register("description")}
-              className="w-full rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" // Changed border color and width
+              className="w-full rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               rows={4}
             />
             {errors.description && (
@@ -207,6 +211,7 @@ const Organization = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 

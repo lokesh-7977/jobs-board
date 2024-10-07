@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import JobCard from "./Cards";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { FaLock } from "react-icons/fa"; // Import a lock icon from react-icons
+import { FaLock } from "react-icons/fa"; 
 
 const Jobs: React.FC = () => {
   interface Job {
@@ -18,9 +18,9 @@ const Jobs: React.FC = () => {
     jobLevel: string;
   }
 
-  const { data: session } = useSession(); // Check for session (user login)
+  const { data: session } = useSession(); 
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [hoveredJobId, setHoveredJobId] = useState<string | null>(null); // Track hovered job
+  const [hoveredJobId, setHoveredJobId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -73,7 +73,6 @@ const Jobs: React.FC = () => {
                   />
                 </Link>
 
-                {/* Lock overlay with improved design */}
                 {!session && hoveredJobId === job.id && (
                   <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-75 text-white rounded-md transition-opacity duration-300 ease-in-out opacity-100">
                     <FaLock className="text-4xl mb-2 animate-pulse" />

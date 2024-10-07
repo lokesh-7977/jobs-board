@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/custom/Navbar";
 import Footer from "@/components/custom/Footer";
+import toast, { Toaster } from "react-hot-toast"; 
 
 const registerSchema = z.object({
   accountType: z.enum(["jobseeker", "organization"], {
@@ -22,95 +23,102 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }, 
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
 
   const onSubmit = (data: RegisterFormData) => {
     if (data.accountType === "jobseeker") {
-      window.location.href = "/jobseeker";
+      toast.success("Redirecting to jobseeker page!");
+      setTimeout(() => {
+        window.location.href = "/jobseeker";
+      }, 2000);
     } else if (data.accountType === "organization") {
-      window.location.href = "/organization";
+      toast.success("Redirecting to organization page!");
+      setTimeout(() => {
+        window.location.href = "/organization";
+      }, 2000);
     }
   };
 
   return (
     <>
-    <Navbar />
-    <div className="bg-[#FaFaFa] px-10 py-14 grid place-content-center h-screen">
-      <div className="w-full max-w-[1000px] m-auto text-center">
-        <h1 className=" mb-3 text-lg font-semibold">We&apos;re glad you&apos;re here!</h1>
-        <p className="text-sm mb-10">First of all, what do you want to do?</p>
+      <Toaster /> 
+      <Navbar />
+      <div className="bg-[#FaFaFa] px-10 py-14 grid place-content-center h-screen">
+        <div className="w-full max-w-[1000px] m-auto text-center">
+          <h1 className="mb-3 text-lg font-semibold">
+            We&apos;re glad you&apos;re here!
+          </h1>
+          <p className="text-sm mb-10">First of all, what do you want to do?</p>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex items-center gap-8 md:flex-row flex-col">
-            <div className="bg-white flex-1 py-16 px-5 rounded-md shadow-md border border-gray-200">
-              <Label className="block">
-                <h1 className="text-2xl font-bold">I am looking for work</h1>
-                <p className="text-sm mt-5 mb-10">
-                  Create a <strong>jobseeker</strong> account.
-                </p>
-                <Input
-                  type="radio"
-                  value="jobseeker"
-                  {...register("accountType")}
-                  className="hidden"
-                  id="jobseeker"
-                />
-                <Link href="/job-seeker">
-                <Button
-                  type="submit"
-                  className="bg-[#504ED7] hover:bg-[#2825C2] transition-[background] px-5 py-3 rounded-sm text-sm text-white"
-                >
-                  START LOOKING FOR JOBS
-                </Button>
-                </Link>
-              </Label>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex items-center gap-8 md:flex-row flex-col">
+              <div className="bg-white flex-1 py-16 px-5 rounded-md shadow-md border border-gray-200">
+                <Label className="block">
+                  <h1 className="text-2xl font-bold">I am looking for work</h1>
+                  <p className="text-sm mt-5 mb-10">
+                    Create a <strong>jobseeker</strong> account.
+                  </p>
+                  <Input
+                    type="radio"
+                    value="jobseeker"
+                    {...register("accountType")}
+                    className="hidden"
+                    id="jobseeker"
+                  />
+                  <Button
+                    type="submit"
+                    className="bg-[#504ED7] hover:bg-[#2825C2] transition-[background] px-5 py-3 rounded-sm text-sm text-white"
+                  >
+                    START LOOKING FOR JOBS
+                  </Button>
+                </Label>
+              </div>
+
+              <strong>OR</strong>
+
+              <div className="bg-white flex-1 py-16 px-5 rounded-md w-[40rem] shadow-md border border-gray-200">
+                <Label className="block">
+                  <h1 className="text-2xl font-bold">I am looking to hire</h1>
+                  <p className="text-sm mt-5 mb-10">
+                    Create an <strong>organization</strong> account.
+                  </p>
+                  <Input
+                    type="radio"
+                    value="organization"
+                    {...register("accountType")}
+                    className="hidden"
+                    id="organization"
+                  />
+                  <Button
+                    type="submit"
+                    className="bg-green-600 hover:bg-green-700 transition-[background] px-5 py-3 rounded-sm text-sm text-white"
+                  >
+                    START LOOKING FOR CANDIDATES
+                  </Button>
+                </Label>
+              </div>
             </div>
 
-            <strong>OR</strong>
+            {errors.accountType && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.accountType.message}
+              </p>
+            )}
 
-            <div className="bg-white flex-1 py-16 px-5 rounded-md w-[40rem] shadow-md border border-gray-200">
-              <Label className="block">
-                <h1 className=" text-2xl font-bold">I am looking to hire</h1>
-                <p className="text-sm mt-5 mb-10">
-                  Create an <strong>organization</strong> account.
-                </p>
-                <Input
-                  type="radio"
-                  value="organization"
-                  {...register("accountType")}
-                  className="hidden"
-                  id="organization"
-                />
-                <Link href="/organisation">
-                <Button
-                  type="submit"
-                  className="bg-green-600 hover:bg-green-700 transition-[background] px-5 py-3 rounded-sm text-sm text-white"
-                >
-                  START LOOKING FOR CANDIDATES
-                </Button>
-                </Link>
-              </Label>
-            </div>
-          </div>
-
-          {errors.accountType && (
-            <p className="text-red-500 text-sm mt-2">{errors.accountType.message}</p>
-          )}
-
-          <p className="text-sm text-gray-500 mt-10">
-            Already have an account?{" "}
-            <Link href="/login" className="text-blue-500">
-              Sign in
-            </Link>
-            .
-          </p>
-        </form>
+            <p className="text-sm text-gray-500 mt-10">
+              Already have an account?{" "}
+              <Link href="/login" className="text-blue-500">
+                Sign in
+              </Link>
+              .
+            </p>
+          </form>
+        </div>
       </div>
-    </div>
-    <Footer />
+      <Footer />
     </>
   );
 };

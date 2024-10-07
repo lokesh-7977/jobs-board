@@ -6,16 +6,15 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { toast } from "react-hot-toast"; // Ensure to install react-toastify
+import { toast, Toaster } from "react-hot-toast"; 
 import { Button } from "@/components/ui/button";
 import {Input } from "@/components/ui/input" 
 import { Label } from "@/components/ui/label";
-import Navbar from "@/components/custom/Navbar"; // Adjust import based on your component structure
-import Footer from "@/components/custom/Footer"; // Adjust import based on your component structure
+import Navbar from "@/components/custom/Navbar"; 
+import Footer from "@/components/custom/Footer"; 
 import Link from "next/link";
 import React from "react";
 
-// Define schema for login validation using Zod
 const loginSchema = z.object({
   email: z.string().email("Invalid email format"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -27,7 +26,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  // React Hook Form integration with Zod resolver for validation
   const {
     register,
     handleSubmit,
@@ -36,7 +34,6 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  // Form submission handler
   const onSubmit = async (data: LoginFormData) => {
     const { email, password } = data;
 
@@ -46,26 +43,29 @@ const Login = () => {
       password,
     });
 
-    if (result?.error) {
-      toast.error("Failed to log in. Please try again.");
+    if (result?.status === 401) {
+      toast.error("Email Not registered.");
     } else if (result?.status === 400) {
       toast.error("Invalid credentials. Please try again.");
     } else if (result?.ok) {
       toast.success("Logged in successfully!");
+    }
+    else if(result?.status === 500){
+        toast.error("Server Error")
+     
 
-      // Redirect based on user role
       const session = await getSession();
-      const role = session?.user?.role; // Ensure the role is available in the session
+      const role = session?.user?.role; 
 
       switch (role) {
         case "jobseeker":
-          router.push("/"); // Redirect to home for jobseekers
+          router.push("/"); 
           break;
         case "employer":
-          router.push("/dashboard"); // Redirect to dashboard for employers
+          router.push("/dashboard");
           break;
         default:
-          router.push("/"); // Fallback redirect
+          router.push("/");
           break;
       }
     }
@@ -73,6 +73,7 @@ const Login = () => {
 
   return (
     <>
+    <Toaster />
       <Navbar />
       <div className="bg-[#FAFAFA] px-10 py-24">
         <div className="bg-white w-full max-w-[400px] border border-gray-300 m-auto px-6 py-12">
@@ -81,7 +82,6 @@ const Login = () => {
           </h1>
 
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Email field */}
             <div className="mb-7">
               <Label htmlFor="email" className="text-sm">
                 Email
@@ -100,7 +100,6 @@ const Login = () => {
               )}
             </div>
 
-            {/* Password field */}
             <div className="mb-7">
               <Label htmlFor="password" className="text-sm">
                 Password
@@ -139,7 +138,6 @@ const Login = () => {
               <div className="clear-both" />
             </div>
 
-            {/* Submit Button */}
             <Button
               type="submit"
               className={`${
