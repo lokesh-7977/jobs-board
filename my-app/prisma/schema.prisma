@@ -47,6 +47,7 @@ model User {
   totalEmployee     Int?      @default(0)
   description       String?
   experience        Int?
+  resume           String?
   role              Role      @default(jobSeeker)
 
   jobs          Jobs[]            @relation("UserJobs")
@@ -108,3 +109,4 @@ model JobApplicants {
   job  Jobs @relation(fields: [jobId], references: [id])
   user User @relation(fields: [userId], references: [id])
 }
+
