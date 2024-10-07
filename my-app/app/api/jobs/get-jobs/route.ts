@@ -24,8 +24,3 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export const config = {
-  api: {
-    bodyParser: false, 
-  },
-};
