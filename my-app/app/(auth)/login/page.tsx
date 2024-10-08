@@ -57,17 +57,20 @@ const Login = () => {
 
   const handleRedirect = async () => {
     const session = await getSession();
-    const role = session?.user?.role; 
+    const role = session?.user?.role;
 
     switch (role) {
       case "jobseeker":
-        router.push("/"); 
+        router.push("/");
         break;
       case "employer":
         router.push("/dashboard");
         break;
+      case "admin": 
+        router.push("/a-dashboard");
+        break;
       default:
-        router.push("/"); 
+        router.push("/");
         break;
     }
   };
@@ -82,7 +85,6 @@ const Login = () => {
             Sign In to Career Connect
           </h1>
 
-          {/* Form starts here */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-7">
               <Label htmlFor="email" className="text-sm">Email</Label>

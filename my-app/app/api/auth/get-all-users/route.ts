@@ -22,6 +22,30 @@ export const GET = async () => {
     }
 };
 
+export async function PATCH(req: Request) {
+    const url = new URL(req.url);
+    const id = url.searchParams.get('id');
+    
+    const {  verifyEmail } = await req.json(); 
+
+    if (!id || typeof id !== 'string') {
+        return NextResponse.json({ message: 'Invalid ID' }, { status: 400 });
+    }
+
+    try {
+        const updatedUser = await prisma.user.update({
+            where: { id: id },
+            data: { verifyEmail }, 
+        });
+
+        return NextResponse.json(updatedUser, { status: 200 });
+    } catch (error) {
+        console.error("Error updating user verification status:", error);
+        return NextResponse.json({ message: 'Error updating user verification status' }, { status: 500 });
+    }
+}
+
+
 export const DELETE = async (req : NextRequest) => {
     try {
         const id = req.nextUrl.searchParams.get('id');
@@ -43,27 +67,38 @@ export const DELETE = async (req : NextRequest) => {
     }
 };
 
-export const PUT = async (req : NextRequest) => {
+
+export const PUT = async (req: NextRequest) => {
     try {
         const id = req.nextUrl.searchParams.get('id');
         const body = await req.json();
-        const { name, email, verifyEmail, city, role } = body;
+        const { verifyEmail } = body;
 
         if (!id) {
-            return NextResponse.json({ error: 'User ID is required' }, { status: 400 }); 
+            return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
         }
+
+        if (typeof verifyEmail !== 'boolean') {
+            return NextResponse.json({ error: 'Invalid or missing verifyEmail value' }, { status: 400 });
+        }
+
+        // Log the inputs to check if they're coming through properly
+        console.log(`Updating user with ID: ${id}, verifyEmail: ${verifyEmail}`);
 
         const updatedUser = await prisma.user.update({
             where: { id: id as string },
-            data: { name, email, verifyEmail, city, role },
+            data: { verifyEmail }, 
         });
 
-        return NextResponse.json(updatedUser); 
+        console.log('User successfully updated:', updatedUser);
+
+        return NextResponse.json(updatedUser);
     } catch (error) {
-        console.error(error); 
-        return NextResponse.json({ error: 'Failed to update user' }, { status: 500 }); 
+        console.error('Failed to update user:', error);
+        return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
     } finally {
         await prisma.$disconnect();
     }
 };
+
 
