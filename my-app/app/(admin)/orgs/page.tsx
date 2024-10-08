@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { Toaster, toast } from 'react-hot-toast'; 
+import Navbar from '@/components/custom/Navbar';
+import Footer from '@/components/custom/Footer';
 
 const Table = () => {
     interface User {
@@ -93,6 +95,8 @@ const Table = () => {
     if (error) return <div className="text-red-500">Error: {error}</div>;
 
     return (
+        <>
+        <Navbar />
         <div className="flex">
             <div className="flex-1 p-6 overflow-hidden">
                 <h1 className="text-2xl font-bold mb-4">Employers List</h1>
@@ -125,6 +129,8 @@ const Table = () => {
             </div>
             <Toaster /> 
         </div>
+        <Footer />
+        </>
     );
 };
 
