@@ -51,7 +51,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const verifyToken = Math.random().toString(36).substring(2);
-    const verifyTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+    const verifyTokenExpiry = new Date(Date.now() + 3600000); 
 
     let user;
 
@@ -92,8 +92,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     return NextResponse.json(user);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error(error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

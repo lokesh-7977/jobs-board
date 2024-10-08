@@ -12,7 +12,6 @@ import { toast, Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-// Zod schema for form validation
 const organizationSchema = z.object({
   name: z.string().nonempty({ message: "Organization Name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
@@ -55,7 +54,6 @@ const Organization = () => {
 
     try {
       const response = await axios.post("/api/auth/register", submittedData);
-      console.log(response); // Debugging log
       if (response.status === 200 || response.status === 201) {
         toast.success("Organization registered successfully!");
         reset();
@@ -64,7 +62,7 @@ const Organization = () => {
         toast.error("Failed to register the organization.");
       }
     } catch (error) {
-      console.error(error); // Log the error for debugging
+      console.error(error); 
       if (axios.isAxiosError(error) && error.response) {
         toast.error(
           `Error: ${error.response.data.error || "An error occurred"}`

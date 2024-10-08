@@ -11,10 +11,10 @@ interface JobCardProps {
   city: string;
   title: string;
   type: string;
-  description: string; // Consider using this for displaying job details
+  description: string; 
   salary: number;
   salaryType: 'month' | 'year';
-  level: string; // Consider using this for displaying job level
+  level: string; 
 }
 
 const JobCard: React.FC<JobCardProps> = ({
