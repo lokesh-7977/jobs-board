@@ -7,7 +7,9 @@ export async function middleware(req: NextRequest) {
 
   const protectedRoutes = ['/dashboard'];
 
-  if (protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route))) {
+  const isProtectedRoute = protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route));
+
+  if (isProtectedRoute) {
     if (!token) {
       const loginUrl = req.nextUrl.clone();
       loginUrl.pathname = '/login';
@@ -15,16 +17,17 @@ export async function middleware(req: NextRequest) {
     }
 
     const userRole = token?.role;
-    if (userRole !== 'employer') {
+
+    if (userRole !== 'admin' && userRole !== 'employer') {
       const homeUrl = req.nextUrl.clone();
-      homeUrl.pathname = '/'; 
+      homeUrl.pathname = '/';
       return NextResponse.redirect(homeUrl);
     }
   }
 
-  return NextResponse.next();
+  return NextResponse.next(); 
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'], 
+  matcher: ['/dashboard', '/a-dashboard'], 
 };
