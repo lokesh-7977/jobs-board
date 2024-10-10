@@ -37,9 +37,7 @@ const Navbar = () => {
 
       <div
         ref={sidebarRef}
-        className={`lg:static fixed top-0 ${
-          openSidebar ? "right-0" : "-right-[3000px]"
-        } transition-all bottom-0 lg:shadow-none shadow-xl lg:w-auto w-[250px] lg:p-0 p-7 bg-[#504ED7] lg:flex lg:flex-1`}
+        className={`lg:static fixed top-0 ${openSidebar ? "right-0" : "-right-[3000px]"} transition-all bottom-0 lg:shadow-none shadow-xl lg:w-auto w-[250px] lg:p-0 p-7 bg-[#504ED7] lg:flex lg:flex-1`}
       >
         <AiOutlineClose
           onClick={() => setOpenSidebar(false)}
@@ -48,17 +46,18 @@ const Navbar = () => {
         <div className="clear-both" />
 
         <div className="flex-1 lg:flex-row flex-col flex lg:items-center items-start text-sm lg:gap-7 gap-4">
-          <Link href="/">
-            <p className={`navbar-link ${pathname === "/" || pathname === "/index" ? "active" : undefined}`}>
-            
-            </p>
-          </Link>
+          
         </div>
 
         <div className="text-sm flex lg:flex-row flex-col lg:items-center items-start lg:gap-8 gap-4 mt-10 lg:mt-0">
           {session ? (
             <>
               <p className="navbar-link text-white font-semibold">Hey, {session.user?.name}</p>
+              <Link href="/profile">
+                <p className="px-4 py-2 rounded-lg text-white hover:bg-[#504ED7] hover:text-white transition duration-300">
+                  My Profile
+                </p>
+              </Link>
               <button
                 onClick={() => signOut()}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300"
@@ -68,14 +67,13 @@ const Navbar = () => {
             </>
           ) : (
             <>
-             
-             <Link href="/job-seeker">
-                <p className={`px-4 py-2  rounded-lg  text-white hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/login" ? "bg-[#504ED7] text-white" : ""}`}>
+              <Link href="/job-seeker">
+                <p className={`px-4 py-2 rounded-lg text-white hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/login" ? "bg-[#504ED7] text-white" : ""}`}>
                   Looking For Job
                 </p>
               </Link>
               <Link href="/organisation">
-                <p className={`px-4 py-2  rounded-lg  text-white hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/register" ? "bg-[#504ED7] text-white" : ""}`}>
+                <p className={`px-4 py-2 rounded-lg text-white hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/register" ? "bg-[#504ED7] text-white" : ""}`}>
                   Looking For Hire
                 </p>
               </Link>
