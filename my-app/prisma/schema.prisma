@@ -75,6 +75,7 @@ model Jobs {
   location       String
   salary         Int?
   employmentType String 
+  category       String?
   image          String?
   jobLevel       String
   createdAt      DateTime @default(now())
