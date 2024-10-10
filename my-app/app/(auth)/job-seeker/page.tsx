@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState } from "react";
-import { AiFillEye, AiFillEyeInvisible, AiOutlineUser } from "react-icons/ai";
-import { BiLock } from "react-icons/bi";
+import { AiFillEye, AiFillEyeInvisible, AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
+import { BiLock, BiUser } from "react-icons/bi";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,6 +29,10 @@ const signupSchema = z
     passwordConfirmation: z
       .string()
       .min(6, { message: "Password confirmation is required" }),
+    mobileNumber: z
+      .string()
+      .regex(/^[0-9]{10}$/, { message: "Invalid mobile number" }),
+    utr: z.string().regex(/^[0-9]{12}$/, { message: "UTR Number is required" })
   })
   .refine((data) => data.password === data.passwordConfirmation, {
     message: "Passwords don't match",
@@ -39,10 +43,8 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 const Jobseeker = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] =
-    useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false);
-  const [utrNumber, setUtrNumber] = useState("");
   const {
     register,
     handleSubmit,
@@ -88,7 +90,7 @@ const Jobseeker = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-7">
               <Label htmlFor="name" className="flex items-center gap-3">
-                <AiOutlineUser className="text-lg text-gray-500" />
+                <BiUser className="text-lg text-gray-500" />
                 <Input
                   id="name"
                   type="text"
@@ -108,7 +110,7 @@ const Jobseeker = () => {
 
             <div className="mb-7">
               <Label htmlFor="email" className="flex items-center gap-3">
-                <AiOutlineUser className="text-lg justify-center text-gray-500" />
+                <AiOutlineMail className="text-lg justify-center text-gray-500" />
                 <Input
                   id="email"
                   type="email"
@@ -122,6 +124,26 @@ const Jobseeker = () => {
               {errors.email && (
                 <p className="text-red-500 text-center text-sm">
                   {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-7">
+              <Label htmlFor="mobileNumber" className="flex items-center gap-3">
+                <AiOutlinePhone className="text-lg text-gray-500" />
+                <Input
+                  id="mobileNumber"
+                  type="text"
+                  {...register("mobileNumber")}
+                  placeholder="Mobile Number"
+                  className={`outline-0 w-full text-sm h-10 ${
+                    errors.mobileNumber ? "border-red-500" : ""
+                  }`}
+                />
+              </Label>
+              {errors.mobileNumber && (
+                <p className="text-red-500 text-center text-sm">
+                  {errors.mobileNumber.message}
                 </p>
               )}
             </div>
@@ -196,48 +218,49 @@ const Jobseeker = () => {
               )}
             </div>
 
-            <>
-              <div className="flex justify-center mb-7">
-                <Image
-                  src={QR}
-                  alt="QR Code for Payment"
-                  width={200}
-                  height={200}
+            <div className="flex justify-center mb-7">
+              <Image
+                src={QR}
+                alt="QR Code for Payment"
+                width={200}
+                height={200}
+              />
+            </div>
+
+            {/* UTR Number Field */}
+            <div className="mb-7">
+              <Label htmlFor="utrNumber" className="flex items-center gap-3">
+                <BiLock className="text-lg text-gray-500" />
+                <Input
+                  id="utrNumber"
+                  {...register("utr")}
+                  placeholder="Enter UTR number"
+                  className={`outline-0 border-gray-200 border-2 w-full text-sm h-10 ${
+                    errors.utr ? "border-red-500" : ""
+                  }`}
                 />
-              </div>
-              <div className="mb-7">
-                <Label htmlFor="utrNumber" className="flex items-center gap-3">
-                  <BiLock className="text-lg text-gray-500" />
-                  <Input
-                    id="utrNumber"
-                    value={utrNumber}
-                    onChange={(e) => setUtrNumber(e.target.value)}
-                    type="text"
-                    placeholder="UTR Number"
-                    className={`outline-0 w-full text-sm h-10 `}
-                  />
-                </Label>
-              </div>
+              </Label>
+              {errors.utr && (
+                <p className="text-red-500 text-center text-sm">
+                  {errors.utr.message}
+                </p>
+              )}
+            </div>
 
-              <div className="text-center text-lg text-gray-600 mt-3">
-                Payment: ₹499
-              </div>
-            </>
-
-            <Button
-              type="submit"
-              className="bg-[#504ED7] hover:bg-[#2825C2] cursor-pointer transition-[background] text-sm w-full py-3 text-white rounded-sm mt-7"
-            >
-              Sign Up
-            </Button>
+            <div className="flex justify-center">
+              <Button className="bg-indigo-500 text-white text-lg w-full h-12 hover:bg-indigo-600">
+                Sign up
+              </Button>
+            </div>
           </form>
-          <p className="mt-8 text-gray-400 text-sm text-center">
-            Already have an account?
-            <Link className="outline-0 text-blue-500" href={"/login"}>
-              {" "}
-              Sign in
-            </Link>
-          </p>
+          <div className="flex justify-center mt-5 text-sm">
+            <p className="text-gray-500">
+              Already have an account?{" "}
+              <Link href="/login">
+                <span className="text-blue-500 cursor-pointer">Login here</span>
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
       <Footer />

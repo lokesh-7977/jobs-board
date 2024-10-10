@@ -8,6 +8,8 @@ interface RequestBody {
   name: string;
   email: string;
   password: string;
+  phone?: string;
+  utr?: string;
   role?: Role;
   // Fields required for employers
   organizationName?: string;
@@ -28,6 +30,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       email,
       password,
       role,
+      phone,
+      utr,
       industryType,
       totalEmployee,
       description,
@@ -35,6 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       city,
       createdOrg
     } = body;
+
 
     if (!name || !email || !password || !role) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -44,12 +49,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
+    if (role === "jobSeeker" && !utr) {
+      return NextResponse.json({ error: "UTR number is required for job seekers" }, { status: 400 });
+    }
+
+    if (role === "employer" && (!industryType)) {
+      return NextResponse.json({ error: "Industry type and organization name are required for employers" }, { status: 400 });
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json({ error: "Email already exists" }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const verifyToken = Math.random().toString(36).substring(2);
     const verifyTokenExpiry = new Date(Date.now() + 3600000); 
 
@@ -69,7 +83,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           description,
           address,
           city,
-          createdOrg
+          createdOrg,
         },
       });
     } else {
@@ -79,21 +93,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           email,
           password: hashedPassword,
           verifyToken,
-          verifyTokenExpiry,
           role: "jobSeeker",
-          industryType,
-          totalEmployee,
-          description,
-          address,
-          city,
-          createdOrg
+          phone,
+          utr, 
         },
       });
+      console.log(user);
     }
 
     return NextResponse.json(user);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
