@@ -12,10 +12,11 @@ type Job = {
   title: string;
   description: string;
   location: string;
-  salary?: number | null;
-  employmentType?: string | undefined;
+  salary?: string | number | null;
+  employmentType?: string;
   jobLevel?: string;
-  skills?: string;
+  skills?: string | string[];
+  category?: string;
 };
 
 const fetchJobs = async (userId: string) => {
@@ -103,7 +104,10 @@ const Dashboard = () => {
   };
 
   const handleViewJob = (job: Job) => {
-    console.log("Viewing job:", job);
+    console.log("Viewing job:", {
+      ...job,
+      category: job.category || "",
+    });
   };
 
   const handleViewApplicants = (jobId: string) => {
@@ -123,6 +127,8 @@ const Dashboard = () => {
                   ? {
                       ...editingJob,
                       employmentType: editingJob.employmentType || "",
+                      category: editingJob.category || "",
+                      salary: editingJob.salary ? editingJob.salary.toString() : "",
                     }
                   : null
               }
@@ -130,16 +136,19 @@ const Dashboard = () => {
               onReset={handleResetForm}
             />
           </div>
-          ]{" "}
           <div className="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-lg">
             {loading ? (
               <p>Loading jobs...</p>
             ) : (
               <JobList
-                jobs={jobs}
+                jobs={jobs.map((job) => ({
+                  ...job,
+                  skills: Array.isArray(job.skills) ? job.skills.join(", ") : job.skills,
+                  salary: typeof job.salary === "string" ? parseFloat(job.salary) || null : job.salary,
+                }))}
                 onEdit={handleEditJob}
-                onDelete={handleDeleteJob}
                 onView={handleViewJob}
+                onDelete={handleDeleteJob}
                 onViewApplicants={handleViewApplicants}
               />
             )}

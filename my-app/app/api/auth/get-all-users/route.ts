@@ -11,6 +11,13 @@ export const GET = async () => {
                 email: true,
                 verifyEmail: true,
                 city : true,
+                ssc : true,
+                sscper : true,
+                inter : true,
+                interper : true,
+                degree : true,
+                degreeper : true,
+                resume: true,
                 role: true,
             },
         });
@@ -92,5 +99,4 @@ export const PUT = async (req: NextRequest) => {
         await prisma.$disconnect();
     }
 };
-
 
