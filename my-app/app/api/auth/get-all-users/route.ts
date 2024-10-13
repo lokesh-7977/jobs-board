@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; 
+import { prisma } from '@/lib/prisma';
 
 export const GET = async () => {
     try {
@@ -10,63 +10,21 @@ export const GET = async () => {
                 name: true,
                 email: true,
                 verifyEmail: true,
-                city : true,
-                ssc : true,
-                sscper : true,
-                inter : true,
-                interper : true,
-                degree : true,
-                degreeper : true,
+                city: true,
+                ssc: true,
+                sscper: true,
+                inter: true,
+                interper: true,
+                degree: true,
+                degreeper: true,
                 resume: true,
                 role: true,
             },
         });
         return NextResponse.json(users);
     } catch (error) {
-        console.error(error); 
-        return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 }); 
-    } finally {
-        await prisma.$disconnect();
-    }
-};
-
-export async function PATCH(req: Request) {
-    const url = new URL(req.url);
-    const id = url.searchParams.get('id');
-    
-    const {  verifyEmail } = await req.json(); 
-
-    if (!id || typeof id !== 'string') {
-        return NextResponse.json({ message: 'Invalid ID' }, { status: 400 });
-    }
-
-    try {
-        const updatedUser = await prisma.user.update({
-            where: { id: id },
-            data: { verifyEmail }, 
-        });
-
-        return NextResponse.json(updatedUser, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ message: 'Error updating user verification status' }, { status: 500 });
-    }
-}
-
-export const DELETE = async (req : NextRequest) => {
-    try {
-        const id = req.nextUrl.searchParams.get('id');
-
-        if (!id) {
-            return NextResponse.json({ error: 'User ID is required' }, { status: 400 }); 
-        }
-
-        await prisma.user.delete({
-            where: { id: id as string },
-        });
-
-        return NextResponse.json({ message: 'User deleted' }); 
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 }); 
+        console.error(error);
+        return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
     } finally {
         await prisma.$disconnect();
     }
@@ -74,29 +32,115 @@ export const DELETE = async (req : NextRequest) => {
 
 export const PUT = async (req: NextRequest) => {
     try {
-        const id = req.nextUrl.searchParams.get('id');
+        const id = req.nextUrl.searchParams.get("id");
         const body = await req.json();
-        const { verifyEmail } = body;
-
+    
+        // Destructure the body to get all the fields
+        const {
+            name,
+            email,
+            city,
+            ssc,
+            sscper,
+            inter,
+            interper,
+            degree,
+            degreeper,
+            resume,
+            verifyEmail,
+            role,
+        } = body;
+    
+        // Ensure the id is provided
         if (!id) {
-            return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+            return NextResponse.json({ error: "User ID is required" }, { status: 400 });
         }
-
-        if (typeof verifyEmail !== 'boolean') {
-            return NextResponse.json({ error: 'Invalid or missing verifyEmail value' }, { status: 400 });
+    
+        // Validate that verifyEmail is a boolean (if provided)
+        if (verifyEmail !== undefined && typeof verifyEmail !== "boolean") {
+            return NextResponse.json({ error: "verifyEmail must be a boolean" }, { status: 400 });
         }
-
+    
+        // Update the user in the database
         const updatedUser = await prisma.user.update({
-            where: { id: id as string },
-            data: { verifyEmail }, 
+            where: { id: id },
+            data: {
+                name,
+                email,
+                city,
+                ssc,
+                sscper,
+                inter,
+                interper,
+                degree,
+                degreeper,
+                resume,
+                verifyEmail,
+                role,
+            },
         });
-
+    
         return NextResponse.json(updatedUser);
     } catch (error) {
-        console.error('Failed to update user:', error);
+        console.error("Error updating user:", error);
         return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
     } finally {
         await prisma.$disconnect();
     }
 };
 
+// New POST method to create a new user
+export const POST = async (req: NextRequest) => {
+    try {
+        const body = await req.json();
+    
+        const {
+            name,
+            email,
+            city,
+            ssc,
+            sscper,
+            inter,
+            interper,
+            degree,
+            degreeper,
+            resume,
+            verifyEmail,
+            role,
+        } = body;
+
+        // Validate email uniqueness
+        const existingUser = await prisma.user.findUnique({
+            where: { email },
+        });
+
+        if (existingUser) {
+            return NextResponse.json({ error: 'Email already in use' }, { status: 400 });
+        }
+
+        // Create a new user
+        const newUser = await prisma.user.create({
+            data: {
+                name,
+                email,
+                city,
+                ssc,
+                sscper,
+                inter,
+                interper,
+                degree,
+                degreeper,
+                resume,
+                verifyEmail,
+                role,
+            },
+        });
+    
+        return NextResponse.json(newUser, { status: 201 });
+    } catch (error) {
+        console.error("Error creating user:", error);
+        return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
+    } finally {
+        await prisma.$disconnect();
+    }
+};
