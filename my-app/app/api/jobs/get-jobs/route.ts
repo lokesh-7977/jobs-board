@@ -19,8 +19,7 @@ export async function GET(req: NextRequest) {
     const jobs = await fetchJobs(userId as string);
     return NextResponse.json({ jobs }); 
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 }); 
+    console.error(error); 
+    return NextResponse.json({ message: 'Failed to fetch jobs' }, { status: 500 });
   }
 }
-

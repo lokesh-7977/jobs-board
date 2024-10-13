@@ -17,7 +17,6 @@ const jobSchema = z.object({
   skills: z.array(z.string()).optional(),
 });
 
-// GET Handler: Fetch paginated jobs
 export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
