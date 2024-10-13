@@ -42,10 +42,7 @@ const JobDetails: React.FC = () => {
 
   useEffect(() => {
     const fetchJobDetails = async () => {
-      if (!session) {
-        router.push('/login'); 
-        return; 
-      }
+     
 
       const dummyJobData: Job = {
         position: "Software Engineer",

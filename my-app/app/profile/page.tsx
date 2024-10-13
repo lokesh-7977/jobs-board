@@ -11,7 +11,6 @@ import Navbar from "@/components/custom/Navbar";
 import Footer from "@/components/custom/Footer";
 import { useSession } from "next-auth/react";
 
-// Validation schema for the form using Zod
 const schema = z.object({
   name: z.string().nonempty("Name is required"),
   email: z.string().email("Invalid email address"),
@@ -27,7 +26,6 @@ const schema = z.object({
   role: z.string().optional(),
 });
 
-// Type for the form data inferred from the schema
 type ProfileFormData = z.infer<typeof schema>;
 
 const Profile = () => {
@@ -45,7 +43,6 @@ const Profile = () => {
     resolver: zodResolver(schema),
   });
 
-  // Fetch user data and set default form values
   const fetchUserData = async () => {
     setLoading(true);
     try {
@@ -85,7 +82,7 @@ const Profile = () => {
           degree: "",
           degreeper: "",
           resume: "",
-          verifyEmail: false,
+          verifyEmail: true,
           role: "",
         });
       }
@@ -97,12 +94,10 @@ const Profile = () => {
     }
   };
 
-  // Fetch user data on mount
   useEffect(() => {
     fetchUserData();
   }, []);
 
-  // Handle form submission
   const onSubmit = async (data: ProfileFormData) => {
     setLoading(true);
     try {
@@ -115,8 +110,8 @@ const Profile = () => {
 
       if (response.status === 200) {
         toast.success("Profile updated successfully");
-        setUserData(updatedData); // Update local state with the updated data
-        reset(updatedData); // Reset form with the updated data
+        setUserData(updatedData);
+        reset(updatedData); 
       } else {
         setErrorMessage("Failed to update user data. Please try again.");
       }

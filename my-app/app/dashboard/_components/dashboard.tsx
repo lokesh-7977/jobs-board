@@ -6,6 +6,7 @@ import JobList from "./job-list";
 import { useUserContext } from "@/app/context/AuthContext";
 import Footer from "@/components/custom/Footer";
 import Navbar from "@/components/custom/Navbar";
+import { useRouter } from "next/navigation"; // Use useRouter for navigation
 
 type Job = {
   id?: string;
@@ -46,6 +47,7 @@ const Dashboard = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter(); // Initialize useRouter
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -108,10 +110,13 @@ const Dashboard = () => {
       ...job,
       category: job.category || "",
     });
+    router.push(`/jobs/${job.id}`); // Use router.push for navigation
   };
 
   const handleViewApplicants = (jobId: string) => {
     console.log("Viewing applicants for job ID:", jobId);
+   
+    router.push(`/jobs/${jobId}/applicants`);
   };
 
   return (

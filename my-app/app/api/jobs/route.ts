@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/app/../lib/prisma";
+import { prisma } from "@/lib/prisma"; 
 
 const jobSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -49,8 +49,8 @@ export async function POST(req: NextRequest) {
         employmentType: parsedBody.employmentType,
         jobLevel: parsedBody.jobLevel || "",
         image: parsedBody.image || null,
-        category: parsedBody.category,
-        website: parsedBody.website !== undefined ? parsedBody.website : null, // Handle undefined
+        category: parsedBody.category || null, // Handle optional field
+        website: parsedBody.website || null, // Handle optional field
         skills: parsedBody.skills || [],
         user: { connect: { id: parsedBody.userId } },
       },
@@ -59,13 +59,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(newJob, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.error("Error creating job:", error.errors);
+      console.error("Validation error while creating job:", error.errors);
       return NextResponse.json({ errors: error.errors }, { status: 400 });
     }
+    console.error("Error creating job:", error);
     return NextResponse.json({ error: "Error creating job" }, { status: 500 });
   }
 }
-
 
 export async function PUT(req: NextRequest) {
   try {
@@ -88,10 +88,10 @@ export async function PUT(req: NextRequest) {
         salary: parsedBody.data.salary ? Number(parsedBody.data.salary) : null,
         image: parsedBody.data.image ?? null,
         employmentType: parsedBody.data.employmentType,
-        jobLevel: parsedBody.data.jobLevel ?? "",
-        category: parsedBody.data.category ?? "",
-        website: parsedBody.data.website ?? "",
-        skills: parsedBody.data.skills ?? [],
+        jobLevel: parsedBody.data.jobLevel || "",
+        category: parsedBody.data.category || null, // Handle optional field
+        website: parsedBody.data.website || null, // Handle optional field
+        skills: parsedBody.data.skills || [],
       },
     });
 
