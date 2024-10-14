@@ -46,7 +46,7 @@ const Navbar = () => {
         <div className="clear-both" />
 
         <div className="flex-1 lg:flex-row flex-col flex lg:items-center items-start text-sm lg:gap-7 gap-4">
-          
+          {/* Additional navigation items can go here */}
         </div>
 
         <div className="text-sm flex lg:flex-row flex-col lg:items-center items-start lg:gap-8 gap-4 mt-10 lg:mt-0">
@@ -75,6 +75,11 @@ const Navbar = () => {
               <Link href="/organisation">
                 <p className={`px-4 py-2 rounded-lg text-white hover:bg-[#504ED7] hover:text-white transition duration-300 ${pathname === "/register" ? "bg-[#504ED7] text-white" : ""}`}>
                   Looking For Hire
+                </p>
+              </Link>
+              <Link href="/login">
+                <p className="px-4 py-2 rounded-lg text-white bg-[#2825C2] hover:bg-[#504ED7] hover:text-white transition duration-300">
+                  Sign In
                 </p>
               </Link>
             </>
