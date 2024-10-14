@@ -1,10 +1,10 @@
 "use client";
 
-import { getSession } from "next-auth/react"; // Import getSession to avoid caching
+import { getSession } from "next-auth/react"; 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AiOutlineSearch, AiOutlineGlobal } from "react-icons/ai"; // Importing icons
+import { AiOutlineSearch, AiOutlineGlobal } from "react-icons/ai";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormSubmit } from "../../app/types/interface";
+import { Session } from "next-auth";
 
 const registerSchema = z.object({
   accountType: z.enum(["jobseeker", "organization"], {
@@ -23,7 +24,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Hero = () => {
   const router = useRouter();
-  const [session, setSession] = useState(null); // State for session
+  const [session, setSession] = useState<Session | null>(null); // State for session
   const [loading, setLoading] = useState(true); // Loading state for session
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
