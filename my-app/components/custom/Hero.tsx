@@ -1,8 +1,8 @@
 "use client";
 
-import { useSession } from "next-auth/react"; // Import useSession hook from NextAuth
+import { getSession } from "next-auth/react"; // Import getSession to avoid caching
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AiOutlineSearch, AiOutlineGlobal } from "react-icons/ai"; // Importing icons
 import { useForm } from "react-hook-form";
@@ -22,8 +22,9 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Hero = () => {
-  const { data: session, status } = useSession(); // Get session and status from NextAuth
   const router = useRouter();
+  const [session, setSession] = useState(null); // State for session
+  const [loading, setLoading] = useState(true); // Loading state for session
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
 
@@ -35,17 +36,26 @@ const Hero = () => {
 
   const handleSubmit = (e: FormSubmit) => {
     e.preventDefault();
-    router.push(`/jobs?q=${search}&location=${location}`); // Redirect to job search results
+    router.push(`/jobs?q=${search}&location=${location}`);
   };
 
-  if (status === "loading") {
-    return <p>Loading...</p>; // Optionally render a loading state while session is being fetched
+  useEffect(() => {
+    // Fetch session on every render without caching
+    const fetchSession = async () => {
+      const sessionData = await getSession();
+      setSession(sessionData);
+      setLoading(false);
+    };
+    fetchSession();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>; // Show loading state while session is being fetched
   }
 
   return (
     <>
       {session ? (
-        // Render job search form if user is logged in
         <div className="pb-20 pt-14 px-10 md:px-0 bg-gradient-to-r from-blue-100 to-white">
           <h1 className="md:text-4xl text-4xl text-center font-bold text-gray-800 mb-4">
             Find Your Dream Job with Career Connects
@@ -92,7 +102,7 @@ const Hero = () => {
           </div>
         </div>
       ) : (
-        <div className="pb-58 px-10 md:px-0 bg-gradient-to-r from-blue-100 to-white h-screen grid place-content-center">
+        <div className="pt-8 pb-[18px] px-10 md:px-0 bg-gradient-to-r from-blue-100 to-white h-full grid place-content-center">
           <div className="w-full max-w-[800px] text-center">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
               Welcome to Career Connects!
@@ -144,14 +154,6 @@ const Hero = () => {
                 {errors.accountType.message}
               </p>
             )}
-
-            {/* <p className="text-sm text-gray-500 mt-10">
-              Already have an account?{" "}
-              <Link href="/login" className="text-blue-500">
-                Sign in
-              </Link>
-              .
-            </p> */}
           </div>
         </div>
       )}

@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { toast, Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Navbar from "@/components/custom/Navbar";
+import Footer from "@/components/custom/Footer";
 
 const organizationSchema = z.object({
   name: z.string().nonempty({ message: "Organization Name is required" }),
@@ -76,6 +78,7 @@ const Organization = () => {
   return (
     <>
     <Toaster />
+    <Navbar />
     <div className="bg-gray-50 px-8 py-12">
       <h1 className="text-center text-3xl font-bold text-indigo-600 mb-8">
         Recruit Better With Careers Connect
@@ -209,6 +212,7 @@ const Organization = () => {
         </form>
       </div>
     </div>
+    <Footer />
     </>
   );
 };
