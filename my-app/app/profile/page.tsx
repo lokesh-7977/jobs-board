@@ -150,7 +150,7 @@ const Profile = () => {
                   errors[field as keyof ProfileFormData] ? "border-red-500" : ""
                 }`}
                 disabled={field === "name" || field === "email"} // Disable name and email fields
-                aria-invalid={errors[field as keyof ProfileFormData] ? "true" : "false"}
+                aria-invalid={errors[field as keyof ProfileFormData] ? true : false}
               />
               {errors[field as keyof ProfileFormData] && (
                 <p className="text-red-500 text-sm mt-1">
