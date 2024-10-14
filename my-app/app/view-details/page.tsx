@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import Navbar from "@/components/custom/Navbar";
@@ -16,7 +16,7 @@ interface Job {
   category: string;
 }
 
-const JobDetail = () => {
+const JobDetailContent = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [job, setJob] = useState<Job | null>(null);
@@ -43,18 +43,17 @@ const JobDetail = () => {
     fetchJob();
   }, [id]);
 
-  if (loading) return <p>Loading job details...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
-  if (!job) return <p>No job found.</p>;
+  if (loading) return <p className="text-center">Loading job details...</p>;
+  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  if (!job) return <p className="text-center">No job found.</p>;
 
   return (
-    <div>
-      <Navbar />
-      <div className="max-w-2xl mx-auto p-6">
-        <h2 className="text-3xl font-bold">{job.title}</h2>
-        <p className="mt-2 text-gray-700">{job.description}</p>
-        <div className="mt-4">
-          <h3 className="text-lg font-semibold">Details</h3>
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-8">
+      <h2 className="text-4xl font-bold mb-4">{job.title}</h2>
+      <p className="mt-2 text-gray-700">{job.description}</p>
+      <div className="mt-6">
+        <h3 className="text-xl font-semibold mb-2">Job Details</h3>
+        <div className="grid grid-cols-2 gap-4">
           <p><strong>Location:</strong> {job.location}</p>
           <p><strong>Salary:</strong> {job.salary}</p>
           <p><strong>Employment Type:</strong> {job.employmentType}</p>
@@ -63,6 +62,17 @@ const JobDetail = () => {
           <p><strong>Category:</strong> {job.category}</p>
         </div>
       </div>
+    </div>
+  );
+};
+
+const JobDetail = () => {
+  return (
+    <div>
+      <Navbar />
+      <Suspense fallback={<p className="text-center">Loading...</p>}>
+        <JobDetailContent />
+      </Suspense>
       <Footer />
     </div>
   );
