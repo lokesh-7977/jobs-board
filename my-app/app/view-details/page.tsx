@@ -30,7 +30,7 @@ const JobDetailContent = () => {
       setError(null); 
 
       try {
-        const response = await axios.get(`/api/jobs/get-job?id=${id}`); 
+        const response = await axios.get(`/api/jobs/get-jobs?id=${id}`); 
         setJob(response.data.job); 
       } catch (error) {
         setError("Failed to fetch job details. Please try again later.");
