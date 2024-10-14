@@ -15,8 +15,8 @@ interface Applicant {
 
 const Applicants = () => {
   const searchParams = useSearchParams();
-  const jobId = searchParams.get('jobId') || ''; // Default to an empty string
-  console.log('Search Params:', searchParams.toString()); // Log search params
+  const jobId = searchParams.get('jobId') || ''; 
+  console.log('Search Params:', searchParams.toString()); 
   console.log('Job ID:', jobId);
 
   const [applicants, setApplicants] = useState<Applicant[]>([]);
@@ -45,6 +45,7 @@ const Applicants = () => {
 
   useEffect(() => {
     fetchApplicants();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobId]);
 
   return (
