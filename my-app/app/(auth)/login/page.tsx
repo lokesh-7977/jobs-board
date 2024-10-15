@@ -61,7 +61,7 @@ const Login = () => {
 
     switch (role) {
       case "jobseeker":
-        router.push("/");
+        router.push("/z");
         break;
       case "employer":
         router.push("/dashboard");
