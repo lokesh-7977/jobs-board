@@ -10,7 +10,6 @@ const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET!;
 declare module "next-auth" {
   interface Session {
     user: {
-      interper: string;
       inter: string;
       interper: string;
       degree: string;

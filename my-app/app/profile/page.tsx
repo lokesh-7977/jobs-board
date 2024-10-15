@@ -90,6 +90,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const onSubmit = async (data: ProfileFormData) => {
