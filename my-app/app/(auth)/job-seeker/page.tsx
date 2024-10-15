@@ -32,7 +32,10 @@ const signupSchema = z
     mobileNumber: z
       .string()
       .regex(/^[0-9]{10}$/, { message: "Invalid mobile number" }),
-    utr: z.string().regex(/^[0-9]{12}$/, { message: "UTR Number is required" })
+    utr: z
+      .string()
+      .length(12, { message: "UTR must be exactly 12 digits" })
+      .regex(/^\d{12}$/, { message: "UTR must contain only digits" }),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
     message: "Passwords don't match",
@@ -229,13 +232,14 @@ const Jobseeker = () => {
 
             {/* UTR Number Field */}
             <div className="mb-7">
-              <Label htmlFor="utrNumber" className="flex items-center gap-3">
+              <Label htmlFor="utr" className="flex items-center gap-3">
                 <BiLock className="text-lg text-gray-500" />
                 <Input
-                  id="utrNumber"
+                  id="utr"
+                  type="text"
                   {...register("utr")}
-                  placeholder="Enter UTR number"
-                  className={`outline-0 border-gray-200 border-2 w-full text-sm h-10 ${
+                  placeholder="UTR Number (12 digits)"
+                  className={`outline-0 w-full text-sm h-10 ${
                     errors.utr ? "border-red-500" : ""
                   }`}
                 />
@@ -247,20 +251,19 @@ const Jobseeker = () => {
               )}
             </div>
 
-            <div className="flex justify-center">
-              <Button className="bg-indigo-500 text-white text-lg w-full h-12 hover:bg-indigo-600">
-                Sign up
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              className="w-full bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 ease-in-out"
+            >
+              Sign Up
+            </Button>
           </form>
-          <div className="flex justify-center mt-5 text-sm">
-            <p className="text-gray-500">
-              Already have an account?{" "}
-              <Link href="/login">
-                <span className="text-blue-500 cursor-pointer">Login here</span>
-              </Link>
-            </p>
-          </div>
+          <p className="text-center text-gray-500 text-sm mt-5">
+            Already have an account?{" "}
+            <Link href="/login" className="text-blue-500 hover:underline">
+              Log In
+            </Link>
+          </p>
         </div>
       </div>
       <Footer />

@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { Toaster, toast } from 'react-hot-toast'; 
-import Footer from '@/components/custom/Footer';
 import Navbar from '@/components/custom/Navbar';
+import Sidebar from './../a-dashboard/-components/sidebar'; 
 
 const Table = () => {
     interface User {
@@ -98,38 +98,45 @@ const Table = () => {
         <>
         <Navbar />
         <div className="flex">
-            <div className="flex-1 p-6 overflow-hidden">
-                <h1 className="text-2xl font-bold mb-4">Employers List</h1>
-                <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-                    <table className="min-w-full border border-gray-200">
-                        <thead className="bg-gray-100">
-                            {table.getHeaderGroups().map(headerGroup => (
-                                <tr key={headerGroup.id}>
-                                    {headerGroup.headers.map(header => (
-                                        <th key={header.id} className="border-b p-4 text-left text-gray-600">
-                                            {flexRender(header.column.columnDef.header, header.getContext())}
-                                        </th>
-                                    ))}
-                                </tr>
-                            ))}
-                        </thead>
-                        <tbody>
-                            {table.getRowModel().rows.map(row => (
-                                <tr key={row.id} className="hover:bg-gray-50 transition duration-200">
-                                    {row.getVisibleCells().map(cell => (
-                                        <td key={cell.id} className="border-b p-4 text-gray-800">
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            {/* Fixed Sidebar */}
+            <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white">
+                <Sidebar />
+            </div>
+
+            {/* Table container */}
+            <div className="ml-64 flex-1 p-6 flex justify-center items-center">
+                <div className="w-full max-w-6xl">
+                    <h1 className="text-2xl font-bold mb-4 text-center">Employers List</h1>
+                    <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+                        <table className="min-w-full border border-gray-200">
+                            <thead className="bg-gray-100">
+                                {table.getHeaderGroups().map(headerGroup => (
+                                    <tr key={headerGroup.id}>
+                                        {headerGroup.headers.map(header => (
+                                            <th key={header.id} className="border-b p-4 text-left text-gray-600">
+                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
+                            <tbody>
+                                {table.getRowModel().rows.map(row => (
+                                    <tr key={row.id} className="hover:bg-gray-50 transition duration-200">
+                                        {row.getVisibleCells().map(cell => (
+                                            <td key={cell.id} className="border-b p-4 text-gray-800">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <Toaster /> 
         </div>
-        <Footer />
         </>
     );
 };

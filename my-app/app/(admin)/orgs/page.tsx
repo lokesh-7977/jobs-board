@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { Toaster, toast } from 'react-hot-toast'; 
 import Navbar from '@/components/custom/Navbar';
-import Footer from '@/components/custom/Footer';
+import Sidebar from '../a-dashboard/-components/sidebar'; 
 
 const Table = () => {
     interface User {
@@ -98,7 +98,8 @@ const Table = () => {
         <>
         <Navbar />
         <div className="flex">
-            <div className="flex-1 p-6 overflow-hidden">
+            <Sidebar /> {/* Call Sidebar */}
+            <div className="flex-1 p-6 overflow-hidden ml-64"> {/* Added margin to avoid overlapping */}
                 <h1 className="text-2xl font-bold mb-4">Employers List</h1>
                 <div className="overflow-x-auto bg-white shadow-md rounded-lg">
                     <table className="min-w-full border border-gray-200">
@@ -129,7 +130,6 @@ const Table = () => {
             </div>
             <Toaster /> 
         </div>
-        <Footer />
         </>
     );
 };

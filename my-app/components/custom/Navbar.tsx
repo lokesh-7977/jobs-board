@@ -25,6 +25,10 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", checkIfClickedOutside);
   }, [openSidebar]);
 
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' }); // Redirect to home after logout
+  };
+
   return (
     <div className="flex items-center justify-between gap-10 lg:px-16 pl-4 pr-7 z-[999] py-3 bg-[#504ED7] sticky top-0 shadow-lg">
       <div onClick={() => router.push("/")} className="flex items-center cursor-pointer">
@@ -46,19 +50,28 @@ const Navbar = () => {
         <div className="clear-both" />
 
         <div className="flex-1 lg:flex-row flex-col flex lg:items-center items-start text-sm lg:gap-7 gap-4">
+          {session?.user?.role === 'admin' && (
+            <Link href="/a-dashboard">
+              <p className="px-4 py-2 rounded-lg text-white hover:bg-[#504ED7] hover:text-white transition duration-300">
+                Dashboard
+              </p>
+            </Link>
+          )}
         </div>
 
         <div className="text-sm flex lg:flex-row flex-col lg:items-center items-start lg:gap-8 gap-4 mt-10 lg:mt-0">
           {session ? (
             <>
               <p className="navbar-link text-white font-semibold">Hey, {session.user?.name}</p>
-              <Link href="/profile">
-                <p className="px-4 py-2 rounded-lg text-white hover:bg-[#504ED7] hover:text-white transition duration-300">
-                  My Profile
-                </p>
-              </Link>
+              {session.user?.role !== 'admin' && (
+                <Link href="/profile">
+                  <p className="px-4 py-2 rounded-lg text-white hover:bg-[#504ED7] hover:text-white transition duration-300">
+                    My Profile
+                  </p>
+                </Link>
+              )}
               <button
-                onClick={() => signOut()}
+                onClick={handleLogout}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300"
               >
                 Logout

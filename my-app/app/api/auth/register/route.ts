@@ -95,7 +95,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           verifyToken,
           role: "jobSeeker",
           phone,
-          utr, 
+          utr : utr,
         },
       });
       console.log(user);

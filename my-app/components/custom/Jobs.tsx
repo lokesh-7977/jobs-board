@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -48,7 +49,12 @@ const Jobs: React.FC = () => {
             throw new Error("Failed to fetch user data");
           }
           const userData = await response.json();
-          setEmailVerified(userData.emailVerified);
+          const currentUser = userData.find((user: any) => user.email === session.user.email);
+          if (currentUser && currentUser.verifyEmail === true) {
+            setEmailVerified(true);
+          } else {
+            setEmailVerified(false);
+          }
         } catch (error) {
           console.error("Error checking email verification:", error);
         }
@@ -108,13 +114,13 @@ const Jobs: React.FC = () => {
         )}
       </div>
  
- {session && emailVerified && (
-      <Link href="/jobs">
-        <button className="border-2 border-blue-500 text-blue-500 rounded-full mb-10 px-6 py-2 transition-colors hover:bg-blue-100">
-          Find More Jobs
-        </button>
-      </Link>
-    )}
+      {session && emailVerified && (
+        <Link href="/jobs">
+          <button className="border-2 border-blue-500 text-blue-500 rounded-full mb-10 px-6 py-2 transition-colors hover:bg-blue-100">
+            Find More Jobs
+          </button>
+        </Link>
+      )}
     </div>
   );
 };

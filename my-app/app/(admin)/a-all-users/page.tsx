@@ -8,6 +8,7 @@ import { useReactTable, getCoreRowModel, flexRender, ColumnDef } from '@tanstack
 import { Toaster, toast } from 'react-hot-toast';
 import Navbar from '@/components/custom/Navbar';
 import Footer from '@/components/custom/Footer';
+import Sidebar from '../a-dashboard/-components/sidebar'; // Import Sidebar
 
 interface User {
   id: string; // Assuming user ID is a string
@@ -140,40 +141,40 @@ const Table = () => {
 
   return (
     <>
-    <Navbar />
-    <div className="flex">
-      <div className="flex-1 p-6 overflow-hidden">
-        <h1 className="text-2xl font-bold mb-4">Users List</h1>
-        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-          <table className="min-w-full border border-gray-200">
-            <thead className="bg-gray-100">
-              {table.getHeaderGroups().map(headerGroup => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <th key={header.id} className="border-b p-4 text-left text-gray-600">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows.map(row => (
-                <tr key={row.id} className="hover:bg-gray-50 transition duration-200">
-                  {row.getVisibleCells().map(cell => (
-                    <td key={cell.id} className="border-b p-4 text-gray-800">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <Navbar />
+      <div className="flex bg-fixed">
+        <Sidebar /> 
+        <div className="flex-1 flex flex-col ml-96 pt-4 overflow-y-auto h-screen">
+          <h1 className="text-2xl font-bold mb-4">Users List</h1>
+          <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+            <table className="min-w-full border border-gray-200">
+              <thead className="bg-gray-100">
+                {table.getHeaderGroups().map(headerGroup => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                      <th key={header.id} className="border-b p-4 text-left text-gray-600">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.map(row => (
+                  <tr key={row.id} className="hover:bg-gray-50 transition duration-200">
+                    {row.getVisibleCells().map(cell => (
+                      <td key={cell.id} className="border-b p-4 text-gray-800">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <Toaster />
-    </div>
-    <Footer />
     </>
   );
 };
