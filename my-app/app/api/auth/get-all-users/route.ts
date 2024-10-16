@@ -89,3 +89,53 @@ export const PUT = async (req: NextRequest) => {
         await prisma.$disconnect();
     }
 };
+
+export const POST = async (req: NextRequest) => {
+    const { name, email, city, ssc, sscper, inter, interper, degree, degreeper, resume } = await req.json(); 
+
+    try {
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email },
+        });
+
+        if (existingUser) {
+            // Update user
+            const user = await prisma.user.update({
+                where: { email }, 
+                data: {
+                    name,
+                    city,
+                    ssc,
+                    sscper,
+                    inter,
+                    interper,
+                    degree,
+                    degreeper,
+                    resume,
+                },
+            });
+            return NextResponse.json(user, { status: 200 });
+        } else {
+            const user = await prisma.user.create({
+                data: {
+                    name,
+                    email,
+                    city,
+                    ssc,
+                    sscper,
+                    inter,
+                    interper,
+                    degree,
+                    degreeper,
+                    resume,
+                },
+            });
+            return NextResponse.json(user, { status: 201 });
+        }
+    } catch (error) {
+        console.error(error); 
+        return NextResponse.json({ error: 'Failed to create or update user' }, { status: 500 });
+    }
+}
+

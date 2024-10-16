@@ -22,15 +22,15 @@ const Table = () => {
   const [data, setData] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [updating, setUpdating] = useState<string | null>(null); // Track the user being updated
+  const [updating, setUpdating] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
       const response = await axios.get('/api/auth/get-all-users/post');
-      console.log(response.data); // Log the response data to verify structure
+      console.log(response.data); 
       const formattedData = response.data.map((user: any) => ({
         ...user,
-        verifiedEmail: user.verifyEmail === true, // Adjust this based on your actual backend response
+        verifiedEmail: user.verifyEmail === true, 
       }));
       setData(formattedData);
     } catch (err) {
@@ -47,7 +47,7 @@ const Table = () => {
   };
 
   useEffect(() => {
-    fetchData(); // Initial data fetch
+    fetchData();
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -62,8 +62,8 @@ const Table = () => {
 
   const handleVerifyEmail = async (id: string, verified: boolean) => {
     try {
-      setUpdating(id); // Set the user being updated
-      const newVerificationStatus = !verified; // Toggle the verification status
+      setUpdating(id); 
+      const newVerificationStatus = !verified; 
       await axios.put(`/api/auth/get-all-users?id=${id}`, { verifyEmail: newVerificationStatus });
       setData(prevData =>
         prevData.map(user =>
@@ -75,7 +75,7 @@ const Table = () => {
       console.error(err);
       toast.error("Failed to update email verification status!");
     } finally {
-      setUpdating(null); // Reset updating state
+      setUpdating(null);
     }
   };
 
@@ -96,7 +96,7 @@ const Table = () => {
       accessorKey: 'verifiedEmail',
       header: () => <span>Verified Email</span>,
       cell: ({ row }) => (
-        <span>{row.original.verifiedEmail ? 'True' : 'False'}</span> // Display "True" or "False"
+        <span>{row.original.verifiedEmail ? 'True' : 'False'}</span> 
       ),
     },
     {
@@ -116,7 +116,7 @@ const Table = () => {
           >
             Delete
           </button>
-          {!row.original.verifiedEmail && ( // Only show the button if the email is not verified
+          {!row.original.verifiedEmail && ( 
             <button
               className={`bg-green-500 text-white px-4 py-1 rounded ${updating === row.original.id ? 'opacity-50 cursor-not-allowed' : ''}`} // Disable button while updating
               onClick={() => handleVerifyEmail(row.original.id, row.original.verifiedEmail)}
