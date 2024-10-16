@@ -138,6 +138,7 @@ const Jobseeker = () => {
                   id="mobileNumber"
                   type="text"
                   {...register("mobileNumber")}
+                  maxLength={10} 
                   placeholder="Mobile Number"
                   className={`outline-0 w-full text-sm h-10 ${
                     errors.mobileNumber ? "border-red-500" : ""
@@ -238,6 +239,7 @@ const Jobseeker = () => {
                   id="utr"
                   type="text"
                   {...register("utr")}
+                  maxLength={12} 
                   placeholder="UTR Number (12 digits)"
                   className={`outline-0 w-full text-sm h-10 ${
                     errors.utr ? "border-red-500" : ""

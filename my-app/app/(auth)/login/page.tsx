@@ -130,11 +130,7 @@ const Login = () => {
                   {errors.password?.message}
                 </p>
               )}
-              <Link href="/forgot-password">
-                <span className="text-blue-500 text-xs mt-2 float-right cursor-pointer">
-                  Forgot password?
-                </span>
-              </Link>
+            
               <div className="clear-both" />
             </div>
 
@@ -153,7 +149,7 @@ const Login = () => {
 
           <p className="text-sm text-gray-500 text-center mt-8">
             Don&apos;t have a Career Connect account yet?{" "}
-            <Link href="/register">
+            <Link href="/job-seeker">
               <span className="text-blue-500 cursor-pointer">Sign Up</span>
             </Link>
           </p>
