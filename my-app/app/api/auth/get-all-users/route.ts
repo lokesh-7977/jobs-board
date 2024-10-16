@@ -139,3 +139,24 @@ export const POST = async (req: NextRequest) => {
     }
 }
 
+
+export const DELETE = async (req: NextRequest) => {
+    try {
+        const id = req.nextUrl.searchParams.get("id");
+
+        if (!id) {
+            return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+        }
+
+        const user = await prisma.user.delete({
+            where: { id },
+        });
+
+        return NextResponse.json(user);
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
+    } finally {
+        await prisma.$disconnect();
+    }
+}
