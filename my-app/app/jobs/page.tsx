@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import Navbar from "@/components/custom/Navbar";
 import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
+import { FaLock } from "react-icons/fa";
 
 interface IJobCardProps {
   id: string;
@@ -68,7 +69,12 @@ const Jobs: React.FC = () => {
             throw new Error("Failed to fetch user data");
           }
           const userData = await response.json();
-          setEmailVerified(userData.emailVerified);
+          const currentUser = userData.find((user: any) => user.email === session.user.email);
+          if (currentUser && currentUser.verifyEmail === true) {
+            setEmailVerified(true);
+          } else {
+            setEmailVerified(false);
+          }
         } catch (error) {
           console.error("Error checking email verification:", error);
         }
@@ -96,30 +102,37 @@ const Jobs: React.FC = () => {
             <div className="grid gap-8 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
               {jobs.map((job) => (
                 <div key={job.id} className="relative">
-                  <Link href={`/jobs/${job.id}`} passHref>
-                    <JobCard
-                      id={job.id}
-                      logo={job.logo}
-                      organization={job.organization}
-                      province={job.province}
-                      city={job.city}
-                      title={job.title}
-                      type={job.type}
-                      description={job.description}
-                      salary={job.salary}
-                      salaryType={job.salaryType}
-                      level={job.level}
-                    />
-                  </Link>
                   {!session ? (
-                    <div className="absolute inset-0 flex justify-center items-center bg-gray-700 bg-opacity-75 text-white rounded-md">
-                      <span>🔒 Locked - Please log in to view details</span>
+                    <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-75 text-white rounded-md transition-opacity duration-300 ease-in-out opacity-100">
+                      <FaLock className="text-4xl mb-2 animate-pulse" />
+                      <span className="text-lg font-semibold">
+                        Please log in to view the job.
+                      </span>
                     </div>
                   ) : !emailVerified ? (
-                    <div className="absolute inset-0 flex justify-center items-center bg-gray-700 bg-opacity-75 text-white rounded-md">
-                      <span>🔒 Verifying UTR - Please wait</span>
+                    <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-75 text-white rounded-md transition-opacity duration-300 ease-in-out opacity-100">
+                      <FaLock className="text-4xl mb-2 animate-pulse" />
+                      <span className="text-lg font-semibold text-center">
+                        We are verifying your UTR to access this job.
+                      </span>
                     </div>
-                  ) : null}
+                  ) : (
+                    <Link href={`/jobs/${job.id}`} passHref>
+                      <JobCard
+                        id={job.id}
+                        logo={job.logo}
+                        organization={job.organization}
+                        province={job.province}
+                        city={job.city}
+                        title={job.title}
+                        type={job.type}
+                        description={job.description}
+                        salary={job.salary}
+                        salaryType={job.salaryType}
+                        level={job.level}
+                      />
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>

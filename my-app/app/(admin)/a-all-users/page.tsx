@@ -26,7 +26,7 @@ const Table = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('/api/auth/get-all-users');
+      const response = await axios.get('/api/auth/get-all-users/post');
       console.log(response.data); // Log the response data to verify structure
       const formattedData = response.data.map((user: any) => ({
         ...user,
