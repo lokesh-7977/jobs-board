@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation'; // Import useParams from next/navigation
 import Navbar from '@/components/custom/Navbar';
 import Footer from '@/components/custom/Footer';
 
@@ -14,13 +14,10 @@ interface Applicant {
 }
 
 const Applicants = () => {
-  const searchParams = useSearchParams();
-  const jobId = searchParams.get('jobId') || ''; 
-  console.log('Search Params:', searchParams.toString()); 
+  const { id: jobId } = useParams();
   console.log('Job ID:', jobId);
-
   const [applicants, setApplicants] = useState<Applicant[]>([]);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   const fetchApplicants = async () => {
     if (!jobId) {
@@ -35,6 +32,7 @@ const Applicants = () => {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
+      console.log('Fetched Applicants:', data); 
       setApplicants(data);
     } catch (error) {
       console.error('Error fetching applicants:', error);
@@ -45,14 +43,16 @@ const Applicants = () => {
 
   useEffect(() => {
     fetchApplicants();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobId]);
 
   return (
     <div>
       <Navbar />
       <div className="max-w-7xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
-        <h2 className="text-3xl font-bold mb-4 text-center text-gray-800">Applicants for Job ID: {jobId || 'N/A'}</h2>
+        <h2 className="text-3xl font-bold mb-4 text-center text-gray-800">
+          Applicants for Job ID: {jobId}
+        </h2>
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="loader animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>

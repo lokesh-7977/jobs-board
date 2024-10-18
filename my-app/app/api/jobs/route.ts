@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma"; 
 
 const jobSchema = z.object({
+  name : z.string().optional(),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   location: z.string().min(1, "Location is required"),
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
 
     const newJob = await prisma.jobs.create({
       data: {
+        name: parsedBody.name,
         title: parsedBody.title,
         description: parsedBody.description,
         location: parsedBody.location,
@@ -49,8 +51,8 @@ export async function POST(req: NextRequest) {
         employmentType: parsedBody.employmentType,
         jobLevel: parsedBody.jobLevel || "",
         image: parsedBody.image || null,
-        category: parsedBody.category || null, // Handle optional field
-        website: parsedBody.website || null, // Handle optional field
+        category: parsedBody.category || null, 
+        website: parsedBody.website || null, 
         skills: parsedBody.skills || [],
         user: { connect: { id: parsedBody.userId } },
       },

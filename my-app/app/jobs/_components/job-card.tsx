@@ -1,28 +1,28 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-no-undef */
 import React from 'react';
 import { useRouter } from 'next/navigation'; 
-import Image from 'next/image';
 
 interface JobCardProps {
   id: string; 
-  logo: string;
+  logo: string | null;
+  image : string;
+  description : string;
   organization: string;
-  province: string;
-  city: string;
+  location: string;
   title: string;
   type: string;
-  description: string; 
-  salary: number;
+  salary: number; 
   salaryType: 'month' | 'year';
-  level: string; 
+  employmentType: string;
+  jobLevel: string;
 }
 
 const JobCard: React.FC<JobCardProps> = ({
   id,
   logo,
   organization,
-  province,
-  city,
+  location,
   title,
   type,
   salary,
@@ -40,8 +40,8 @@ const JobCard: React.FC<JobCardProps> = ({
       className="bg-white shadow-md rounded-lg p-5 transition-transform hover:scale-105 cursor-pointer"
     >
       <div className="flex items-center gap-4">
-        <Image
-          src={logo || "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"} 
+        <img
+          src={logo || ""} 
           alt={`${organization} logo`} 
           width={50}
           height={48}
@@ -59,12 +59,10 @@ const JobCard: React.FC<JobCardProps> = ({
         </span>
       </div>
 
-      <p className="text-gray-500 mt-4">{`${city}, ${province}`}</p>
+      <p className="text-gray-500 mt-4">{location}</p>
 
       <p className="text-blue-600 font-semibold mt-2">
-        {`Rs ${salary.toLocaleString('id-ID')} / ${
-          salaryType === 'month' ? 'Month' : 'Year'
-        }`}
+        {`Rs ${salary.toLocaleString('id-ID')} / ${salaryType === 'month' ? 'Month' : 'Year'}`}
       </p>
     </div>
   );

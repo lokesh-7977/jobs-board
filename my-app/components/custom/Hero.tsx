@@ -24,8 +24,9 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Hero = () => {
   const router = useRouter();
-  const [session, setSession] = useState<Session | null>(null); // State for session
-  const [loading, setLoading] = useState(true); // Loading state for session
+  const [session, setSession] = useState<Session | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
 
@@ -41,7 +42,6 @@ const Hero = () => {
   };
 
   useEffect(() => {
-    // Fetch session on every render without caching
     const fetchSession = async () => {
       const sessionData = await getSession();
       setSession(sessionData);
@@ -50,9 +50,6 @@ const Hero = () => {
     fetchSession();
   }, []);
 
-  if (loading) {
-    return <p>Loading...</p>; // Show loading state while session is being fetched
-  }
 
   return (
     <>

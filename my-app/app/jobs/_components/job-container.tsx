@@ -1,6 +1,22 @@
-import { IJob } from "../../types/interface"; // Correct the import path if necessary
 import Link from "next/link";
 import JobCard from "./job-card";
+import React from "react";
+
+interface IJob {
+  _id: string;
+  position: string;
+  overview: string;
+  salary: number | string; // Allow null if no salary is provided
+  employmentType: string;
+  organization: {
+    user: {
+      logo: string;
+      name: string;
+    };
+  };
+  city: string;
+  jobLevel: string; 
+}
 
 interface IProps {
   jobs: IJob[];
@@ -15,19 +31,16 @@ const JobContainer: React.FC<IProps> = ({ jobs }) => {
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-10">
         {jobs.map((item) => (
           <JobCard
-            id={String(item._id)} 
+            id={String(item._id)}
             key={item._id}
-            logo={item.organization?.user.avatar || ""} 
-            organization={item.organization?.user.name || "Unknown Organization"} 
-            province={String(item.organization?.user.province) || "Unknown Province"} 
-            city={String(item.organization?.user.city) || "Unknown City"} 
-            description={item.overview}
+            image={item.organization?.user.logo || ""} // Ensure to use 'image' prop
             title={item.position}
-            salary={item.salary}
-            salaryType="month" 
-            type={item.employmentType}
-            level={""} 
-          />
+            description={item.overview}
+            location={`${item.city}`} // Concatenate city and province for location
+            salary={typeof item.salary === 'string' ? parseFloat(item.salary) : item.salary}
+            employmentType={item.employmentType}
+            jobLevel={item.jobLevel} // Pass job level if available
+            logo={null} organization={""} type={""} salaryType={"month"}          />
         ))}
       </div>
       <Link href="/jobs" passHref>

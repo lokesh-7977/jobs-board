@@ -9,6 +9,7 @@ import { FaLock } from "react-icons/fa";
 
 const Jobs: React.FC = () => {
   interface Job {
+    name: string;
     id: string;
     title: string;
     description: string;
@@ -27,6 +28,7 @@ const Jobs: React.FC = () => {
     const fetchJobs = async () => {
       try {
         const response = await fetch("/api/jobs");
+        console.log(response)
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -89,8 +91,7 @@ const Jobs: React.FC = () => {
                   salary={job.salary}
                   employmentType={job.employmentType}
                   image={job.image || null}
-                  jobLevel={job.jobLevel}
-                />
+                  jobLevel={job.jobLevel} companyName={job.name}                />
                 {!session ? (
                   <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-75 text-white rounded-md transition-opacity duration-300 ease-in-out opacity-100">
                     <FaLock className="text-4xl mb-2 animate-pulse" />

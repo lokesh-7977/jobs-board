@@ -1,27 +1,29 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { FiBriefcase, FiMapPin } from 'react-icons/fi'; // Import icons for employment type and location
 
 interface JobCardProps {
-  id: string; // Use string type to match the API response
+  id: string; 
   title: string;
   description: string;
-  location: string;
-  salary: number;
+  location: string; // Ensure this accepts a full location
+  salary: number | null; // Allow salary to be null
   employmentType: string;
   image: string | null;
   jobLevel: string;
+  companyName: string; // Added for the company name
 }
 
 const JobCard: React.FC<JobCardProps> = ({
   id,
   title,
-  description,
   location,
   salary,
   employmentType,
-  image : image,
+  image,
   jobLevel,
+  companyName,
 }) => {
   const router = useRouter();
 
@@ -32,31 +34,38 @@ const JobCard: React.FC<JobCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className="cursor-pointer border-2 hover:border-blue-700 bg-white shadow-lg rounded-lg p-6 transition-transform hover:scale-105"
+      className="cursor-pointer border bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 hover:shadow-2xl relative overflow-hidden"
     >
-      <div className="flex items-center gap-4 mb-4">
-        <Image 
-          src={image || "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"} 
-          className="w-12 h-12 rounded-full object-cover" 
+      <div className="absolute inset-0 bg-gradient-to-br opacity-70 rounded-lg"></div>
+
+      <div className="flex items-center mb-4 relative z-10">
+        <img 
+          src={image || ''} 
+          className="w-14 h-14 rounded-full object-cover border-2 shadow-sm" 
           alt={title} 
-          width={48} 
-          height={48} 
+          width={56} 
+          height={56} 
         />
-        <div>
-          <p className="text-sm text-gray-600">{location}</p>
+        <div className="ml-4">
+          <h2 className="font-bold text-lg text-gray-800">{title}</h2>
+          <p className="text-sm text-gray-600 font-semibold">{companyName}</p>
         </div>
       </div>
 
-      <h2 className="font-bold text-lg text-gray-800 mb-2">{title}</h2>
+      <div className="flex items-center mb-2">
+        <p className="text-sm text-gray-500 flex items-center mr-4">
+          <FiBriefcase className="mr-1 text-blue-500" /> {employmentType}
+        </p>
+        <p className="text-sm text-gray-500 flex items-center">
+          <FiMapPin className="mr-1 text-blue-500" /> {location}
+        </p>
+      </div>
 
-      <p className="text-sm text-gray-500 mb-4">{employmentType}</p>
-
-      <p className="text-xs text-gray-400 truncate mb-6">{description}</p>
-
-      <p className="text-lg font-semibold text-black">
-        {`Rs ${salary.toLocaleString('id-ID')} / month`}
+      <p className="text-lg font-bold text-black mb-1">
+        {`₹ ${salary !== null ? salary.toLocaleString('en-IN') : 'N/A'} / month`} 
       </p>
-      <p className="text-xs text-gray-500">{jobLevel}</p>
+
+      <p className="text-xs text-gray-500"><b>Job Level:</b>{jobLevel}</p>
     </div>
   );
 };

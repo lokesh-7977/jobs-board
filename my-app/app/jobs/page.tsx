@@ -119,18 +119,14 @@ const Jobs: React.FC = () => {
                   ) : (
                     <Link href={`/jobs/${job.id}`} passHref>
                       <JobCard
-                        id={job.id}
-                        logo={job.logo}
-                        organization={job.organization}
-                        province={job.province}
-                        city={job.city}
-                        title={job.title}
-                        type={job.type}
-                        description={job.description}
-                        salary={job.salary}
-                        salaryType={job.salaryType}
-                        level={job.level}
-                      />
+                            id={job.id}
+                            logo={job.logo}
+                            organization={job.organization}
+                            title={job.title}
+                            type={job.type}
+                            description={job.description}
+                            salary={job.salary}
+                            salaryType={job.salaryType} image={""} location={""} employmentType={""} jobLevel={""}                      />
                     </Link>
                   )}
                 </div>

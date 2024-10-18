@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import JobForm from "./job-form";
@@ -10,6 +11,7 @@ import { useRouter } from "next/navigation"; // Use useRouter for navigation
 
 type Job = {
   id?: string;
+  name?: string; 
   title: string;
   description: string;
   location: string;
@@ -18,6 +20,7 @@ type Job = {
   jobLevel?: string;
   skills?: string | string[];
   category?: string;
+  organization?: string; 
 };
 
 const fetchJobs = async (userId: string) => {
@@ -47,7 +50,7 @@ const Dashboard = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -66,24 +69,33 @@ const Dashboard = () => {
   }, [userId]);
 
   const handleAddOrUpdateJob = async (job: Job) => {
-    if (!userId) return;
-    setLoading(true);
-    try {
-      const savedJob = editingJob
-        ? await updateJob(job, userId)
-        : await addJob(job, userId);
-      setJobs((prevJobs) =>
-        editingJob
-          ? prevJobs.map((j) => (j.id === savedJob.id ? savedJob : j))
-          : [...prevJobs, savedJob]
-      );
-      setEditingJob(null);
-    } catch (error) {
-      console.error("Error saving job:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (!job.name || !job.title) {
+        console.error("Job name and title are required");
+        return;
+      }
+  
+      if (!userId) {
+        console.error("User ID is required");
+        return;
+      }
+  
+      setLoading(true);
+      try {
+        const savedJob = editingJob
+          ? await updateJob(job, userId)
+          : await addJob(job, userId);
+        setJobs((prevJobs) =>
+          editingJob
+            ? prevJobs.map((j) => (j.id === savedJob.id ? savedJob : j))
+            : [...prevJobs, savedJob]
+        );
+        setEditingJob(null);
+      } catch (error) {
+        console.error("Error saving job:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const handleEditJob = (job: Job) => {
     setEditingJob({ ...job });
@@ -106,16 +118,12 @@ const Dashboard = () => {
   };
 
   const handleViewJob = (job: Job) => {
-    console.log("Viewing job:", {
-      ...job,
-      category: job.category || "",
-    });
-    router.push(`/jobs/${job.id}`); // Use router.push for navigation
+    console.log("Viewing job:", job);
+    router.push(`/jobs/${job.id}`);
   };
 
   const handleViewApplicants = (jobId: string) => {
     console.log("Viewing applicants for job ID:", jobId);
-   
     router.push(`/jobs/${jobId}/applicants`);
   };
 
@@ -131,8 +139,10 @@ const Dashboard = () => {
                 editingJob
                   ? {
                       ...editingJob,
+                      name : editingJob.name || "",
                       employmentType: editingJob.employmentType || "",
                       category: editingJob.category || "",
+                      organization: editingJob.organization || "", // Ensure organization is provided
                       salary: editingJob.salary ? editingJob.salary.toString() : "",
                     }
                   : null
@@ -148,6 +158,8 @@ const Dashboard = () => {
               <JobList
                 jobs={jobs.map((job) => ({
                   ...job,
+                  id: job.id || "",
+                  name: job.name || "",
                   skills: Array.isArray(job.skills) ? job.skills.join(", ") : job.skills,
                   salary: typeof job.salary === "string" ? parseFloat(job.salary) || null : job.salary,
                 }))}
